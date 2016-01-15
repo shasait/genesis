@@ -27,7 +27,7 @@ public class Foo {
 }
 ```
 
-The script metadata.js is integrated into genesis and can be used as a starting point. For each annotated class it generates a class with suffix _MD containing metadata, e.g. property names.
+The script [metaData.js](processor/src/main/resources/genesis/metaData.js) is integrated into genesis and can be used as a starting point. For each annotated class it generates a class with suffix _MD containing metadata, e.g. property names.
 
 ## Project status
 Early phase - expect major changes while the usage and API stabilizes.
