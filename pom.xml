@@ -33,7 +33,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/shasait/genesis.git</connection>
-		<developerConnection>scm:git:https://github.com/shasait/genesis.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:shasait/genesis.git</developerConnection>
 		<url>https://github.com/shasait/genesis</url>
 	</scm>
 
