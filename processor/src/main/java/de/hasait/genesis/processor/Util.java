@@ -16,8 +16,11 @@
 
 package de.hasait.genesis.processor;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +78,17 @@ public final class Util {
 		result.append(pInput.substring(current).toUpperCase());
 
 		return result.toString();
+	}
+
+	public static long copy(Reader pInput, Writer pOutput) throws IOException {
+		char[] buffer = new char[8192];
+		long total = 0;
+		int chunk;
+		while (-1 != (chunk = pInput.read(buffer))) {
+			pOutput.write(buffer, 0, chunk);
+			total += chunk;
+		}
+		return total;
 	}
 
 	public static String determinePropertyNameFromAccessor(Element pElement) {
@@ -183,7 +197,6 @@ public final class Util {
 		return false;
 	}
 
-
 	public static void printError(Messager pMessager, Element pElement, String pFormat, Object... pArgs) {
 		String message = String.format(pFormat, pArgs);
 		pMessager.printMessage(Diagnostic.Kind.ERROR, message, pElement);
@@ -202,6 +215,12 @@ public final class Util {
 		String stackTrace = sw.toString();
 		String message = String.format("Unexpected throwable in %s: %s", GenesisProcessor.class.getSimpleName(), stackTrace);
 		pMessager.printMessage(Diagnostic.Kind.ERROR, message, pElement);
+	}
+
+	public static String toString(Reader pInput) throws IOException {
+		StringWriter sw = new StringWriter();
+		copy(pInput, sw);
+		return sw.toString();
 	}
 
 	private Util() {

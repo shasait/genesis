@@ -21,9 +21,19 @@ package de.hasait.genesis.processor.model;
  */
 public enum JVisibility {
 
-	PUBLIC,
-	PACKAGE,
-	PROTECTED,
-	PRIVATE
+	PUBLIC("public"),
+	PACKAGE(""),
+	PROTECTED("protected"),
+	PRIVATE("private");
+
+	private final String _src;
+
+	JVisibility(String pSrc) {
+		_src = pSrc;
+	}
+
+	public String getSrc() {
+		return _src;
+	}
 
 }

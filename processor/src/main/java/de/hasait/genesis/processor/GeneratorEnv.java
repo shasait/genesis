@@ -55,6 +55,10 @@ public class GeneratorEnv {
 		_model = new JModel(qualifiedPackageName, className);
 	}
 
+	public JavaFileObject createSourceFile(String pName) throws IOException {
+		return _processingEnvironment.getFiler().createSourceFile(pName, _typeElement);
+	}
+
 	public PrintWriter createSrcFileWithSuffix(String pSuffix) throws IOException {
 		JavaFileObject srcFile = _processingEnvironment.getFiler().createSourceFile(_typeElement.getQualifiedName() + pSuffix);
 		return new java.io.PrintWriter(srcFile.openWriter());
@@ -74,6 +78,18 @@ public class GeneratorEnv {
 
 	public TypeElement getTypeElement() {
 		return _typeElement;
+	}
+
+	public void printError(String pFormat, Object... pArgs) {
+		Util.printError(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
+	}
+
+	public void printNote(String pFormat, Object... pArgs) {
+		Util.printNote(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
+	}
+
+	public void printStackTrace(Throwable pThrowable) {
+		Util.printStackTrace(_processingEnvironment.getMessager(), _typeElement, pThrowable);
 	}
 
 	public String typeMirrorToJavaSrc(TypeMirror pTypeMirror) {

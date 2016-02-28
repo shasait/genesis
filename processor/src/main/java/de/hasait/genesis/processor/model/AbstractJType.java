@@ -17,6 +17,7 @@
 package de.hasait.genesis.processor.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.hasait.genesis.processor.Util;
@@ -45,6 +46,10 @@ public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends Ab
 		initField(field);
 		_fields.add(field);
 		return field;
+	}
+
+	public List<JField> getFields() {
+		return Collections.unmodifiableList(_fields);
 	}
 
 	protected void initField(JField pField) {

@@ -14,4 +14,4 @@
  # limitations under the License.
 -->
 
-<@delegate model=model template="AbstractJType.ftl" kind="class" />
+${model.visibility.src}<#if model.static> static</#if> <@delegate model=model template="AbstractJTypedElement.ftl" replaceType=params.replaceType />

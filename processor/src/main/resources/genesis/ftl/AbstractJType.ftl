@@ -14,4 +14,12 @@
  # limitations under the License.
 -->
 
-<@delegate model=model template="AbstractJType.ftl" kind="class" />
+<#if model.type.type.package.qualifiedName??>package ${model.type.type.package.qualifiedName};</#if>
+
+<@delegate model=model template="AbstractJDeclaredTypedElement.ftl" replaceType=params.kind /> {
+
+    <#list model.fields as field>
+        <@delegate model=field />
+    </#list>
+
+}

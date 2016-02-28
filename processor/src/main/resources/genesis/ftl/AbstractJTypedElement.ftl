@@ -14,4 +14,4 @@
  # limitations under the License.
 -->
 
-<@delegate model=model template="AbstractJType.ftl" kind="class" />
+<#if model.final> final</#if> <#if ! params.replaceType??>${model.type.type.qualifiedName}<#else>${params.replaceType}</#if> ${model.name}

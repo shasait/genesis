@@ -52,11 +52,19 @@ public class GenerateMetaData {
 		JTypeReference javaLangClassTR = model.createOrGetTypeReference(Class.class);
 		JTypeUsage javaLangClassAnyTU = javaLangClassTR.createUsage(JTypeArgument.createAny());
 
-		JField sourceNameField = mdClass.addField(javaLangStringTU, "SOURCE__NAME");
+		JField sourceNameField = mdClass.addField(javaLangStringTU, "SOURCE__QUALIFIED_NAME");
 		sourceNameField.setVisibility(JVisibility.PUBLIC);
 		sourceNameField.setStatic(true);
 		sourceNameField.setFinal(true);
 		sourceNameField.setInitializer(new JCustomExpression("\"" + typeElement.getQualifiedName() + "\""));
+
+		String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(typeElement.asType());
+
+		JField sourceTypeField = mdClass.addField(javaLangClassAnyTU, "SOURCE__TYPE");
+		sourceTypeField.setVisibility(JVisibility.PUBLIC);
+		sourceTypeField.setStatic(true);
+		sourceTypeField.setFinal(true);
+		sourceTypeField.setInitializer(new JCustomExpression(sourceTypeJavaSrc));
 
 		Set<String> processedPropertyNames = new HashSet<>();
 
@@ -70,10 +78,10 @@ public class GenerateMetaData {
 				String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(propertyTM);
 
 				JField propertyNameField = mdClass.addField(javaLangStringTU, "PROPERTY__" + propertyNameUU + "__NAME");
-				sourceNameField.setVisibility(JVisibility.PUBLIC);
-				sourceNameField.setStatic(true);
-				sourceNameField.setFinal(true);
-				sourceNameField.setInitializer(new JCustomExpression("\"" + propertyName + "\""));
+				propertyNameField.setVisibility(JVisibility.PUBLIC);
+				propertyNameField.setStatic(true);
+				propertyNameField.setFinal(true);
+				propertyNameField.setInitializer(new JCustomExpression("\"" + propertyName + "\""));
 
 				JField propertyTypeField = mdClass.addField(javaLangClassAnyTU, "PROPERTY__" + propertyNameUU + "__TYPE");
 				propertyTypeField.setVisibility(JVisibility.PUBLIC);

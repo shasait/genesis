@@ -14,4 +14,4 @@
  # limitations under the License.
 -->
 
-<@delegate model=model template="AbstractJType.ftl" kind="class" />
+${model.customCode}

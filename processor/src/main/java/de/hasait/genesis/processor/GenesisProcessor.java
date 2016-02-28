@@ -38,6 +38,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import de.hasait.genesis.annotations.Genesis;
+import de.hasait.genesis.processor.freemarker.FreemarkerModelWriter;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 /**
@@ -111,9 +112,21 @@ public class GenesisProcessor extends AbstractProcessor {
 
 		configuration.registerElementProcessor(Genesis.class.getName(), this::processGenesis);
 
-		configuration.setModelWriter(new ModelWriter(processingEnv));
+		configuration.setModelWriter(new FreemarkerModelWriter());
 
 		return configuration;
+	}
+
+	private ScriptEngine determineScriptEngine(String pScriptFileExtension, ClassLoader pClassLoader) {
+		ScriptEngine engine;
+		NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
+		if (nashornScriptEngineFactory.getExtensions().contains(pScriptFileExtension)) {
+			engine = nashornScriptEngineFactory.getScriptEngine(pClassLoader);
+		} else {
+			ScriptEngineManager factory = new ScriptEngineManager();
+			engine = factory.getEngineByExtension(pScriptFileExtension);
+		}
+		return engine;
 	}
 
 	private void printError(Element pElement, String pFormat, Object... pArgs) {
@@ -176,15 +189,7 @@ public class GenesisProcessor extends AbstractProcessor {
 
 				String scriptFileExtension = scriptResourcePath.substring(indexOfDot + 1);
 
-				ScriptEngine engine;
-
-				NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
-				if (nashornScriptEngineFactory.getExtensions().contains(scriptFileExtension)) {
-					engine = nashornScriptEngineFactory.getScriptEngine(classLoader);
-				} else {
-					ScriptEngineManager factory = new ScriptEngineManager();
-					engine = factory.getEngineByExtension(scriptFileExtension);
-				}
+				ScriptEngine engine = determineScriptEngine(scriptFileExtension, classLoader);
 
 				if (engine == null) {
 					printError(classElement, "Script extension \"%s\" unsupported", scriptFileExtension);

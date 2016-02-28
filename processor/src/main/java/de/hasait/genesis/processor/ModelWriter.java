@@ -16,47 +16,9 @@
 
 package de.hasait.genesis.processor;
 
-import java.io.Writer;
-
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.tools.JavaFileObject;
-
-import de.hasait.genesis.processor.model.AbstractJType;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 /**
  *
  */
-public class ModelWriter {
-
-	private final freemarker.template.Configuration _configuration;
-	private final ProcessingEnvironment _processingEnvironment;
-
-	public ModelWriter(ProcessingEnvironment pProcessingEnvironment) {
-		super();
-		_processingEnvironment = pProcessingEnvironment;
-
-		_configuration = new Configuration(Configuration.VERSION_2_3_23);
-		_configuration.setDefaultEncoding("UTF-8");
-		_configuration.setClassForTemplateLoading(ModelWriter.class, "/genesis/ftl/");
-	}
-
-	public void write(GeneratorEnv pGeneratorEnv) throws Exception {
-		Util.assertNotNull(pGeneratorEnv);
-
-		for (AbstractJType<?> jType : pGeneratorEnv.getModel().getCreatedTypes()) {
-			Util.printNote(_processingEnvironment.getMessager(), pGeneratorEnv.getTypeElement(), "New Type: %s", jType);
-			JavaFileObject sourceFile = _processingEnvironment.getFiler().createSourceFile(jType.getType().getType().getQualifiedName());
-			try (Writer writer = sourceFile.openWriter()) {
-				write(writer, jType);
-			}
-		}
-	}
-
-	private void write(Writer pWriter, Object pObject) throws Exception {
-		Template template = _configuration.getTemplate(pObject.getClass().getSimpleName() + ".ftl");
-		template.process(pObject, pWriter);
-	}
-
+public interface ModelWriter {
+	void write(GeneratorEnv pGeneratorEnv) throws Exception;
 }
