@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package de.hasait.genesis.processor.model;
-
-import java.util.ArrayList;
-import java.util.List;
+package de.hasait.genesis.processor.model.old;
 
 /**
- *
+ * @deprecated Use {@link de.hasait.genesis.processor.GeneratorEnv#getModel}.
  */
-public final class JMethod extends AbstractJMethod {
+@Deprecated
+public enum Multiplicity {
+	ONE(true),
+	MANY_SET(false),
+	MANY_LIST(false);
 
-	private final List<AbstractJStatement> _statements = new ArrayList<>();
+	private final boolean _singular;
 
-	JMethod(final JTypeUsage pType, final String pName) {
-		super(pType, pName);
+	Multiplicity(final boolean pSingular) {
+		_singular = pSingular;
+	}
+
+	public boolean isSingular() {
+		return _singular;
 	}
 
 }

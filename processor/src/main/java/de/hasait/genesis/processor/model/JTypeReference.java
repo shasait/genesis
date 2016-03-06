@@ -16,7 +16,7 @@
 
 package de.hasait.genesis.processor.model;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  * Reference to a type.
@@ -43,9 +43,9 @@ public final class JTypeReference extends AbstractJNamed {
 
 	private AbstractJType _type;
 
-	JTypeReference(JPackage pPackage, String pName) {
+	JTypeReference(final JPackage pPackage, final String pName) {
 		super(pName);
-		Util.assertNotNull(pPackage);
+		GenesisUtils.assertNotNull(pPackage);
 
 		_package = pPackage;
 		_primitive = false;
@@ -53,7 +53,7 @@ public final class JTypeReference extends AbstractJNamed {
 		_qualifiedName = _package.buildQualifiedName(pName);
 	}
 
-	private JTypeReference(String pName, boolean pPrimitive, boolean pVoid) {
+	private JTypeReference(final String pName, final boolean pPrimitive, final boolean pVoid) {
 		super(pName);
 
 		_package = null;
@@ -62,7 +62,7 @@ public final class JTypeReference extends AbstractJNamed {
 		_qualifiedName = pName;
 	}
 
-	public JTypeUsage createUsage(JTypeArgument... pArguments) {
+	public JTypeUsage createUsage(final JTypeArgument... pArguments) {
 		return new JTypeUsage(this, pArguments);
 	}
 
@@ -91,9 +91,9 @@ public final class JTypeReference extends AbstractJNamed {
 		return getClass().getSimpleName() + "[" + _qualifiedName + "]";
 	}
 
-	void setType(AbstractJType pType) {
-		Util.assertTrue(!_primitive);
-		Util.assertTrue(!_void);
+	void setType(final AbstractJType pType) {
+		GenesisUtils.assertTrue(!_primitive);
+		GenesisUtils.assertTrue(!_void);
 
 		_type = pType;
 	}

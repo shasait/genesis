@@ -27,6 +27,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
 
 import de.hasait.genesis.processor.model.JModel;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  *
@@ -41,26 +42,26 @@ public class GeneratorEnv {
 	private final JModel _model;
 	private URL _scriptFileURL;
 
-	GeneratorEnv(ProcessingEnvironment pProcessingEnvironment, TypeElement pTypeElement, String[] pScriptArgs) {
+	GeneratorEnv(final ProcessingEnvironment pProcessingEnvironment, final TypeElement pTypeElement, final String[] pScriptArgs) {
 		super();
 
 		_processingEnvironment = pProcessingEnvironment;
 		_typeElement = pTypeElement;
 		_scriptArgs = pScriptArgs;
 
-		PackageElement packageElement = Util.findPackageElement(pTypeElement);
-		String qualifiedPackageName = packageElement == null ? null : packageElement.getQualifiedName().toString();
-		String className = pTypeElement.getSimpleName().toString();
+		final PackageElement packageElement = GenesisUtils.findPackageElement(pTypeElement);
+		final String qualifiedPackageName = packageElement == null ? null : packageElement.getQualifiedName().toString();
+		final String className = pTypeElement.getSimpleName().toString();
 
 		_model = new JModel(qualifiedPackageName, className);
 	}
 
-	public JavaFileObject createSourceFile(String pName) throws IOException {
+	public JavaFileObject createSourceFile(final String pName) throws IOException {
 		return _processingEnvironment.getFiler().createSourceFile(pName, _typeElement);
 	}
 
-	public PrintWriter createSrcFileWithSuffix(String pSuffix) throws IOException {
-		JavaFileObject srcFile = _processingEnvironment.getFiler().createSourceFile(_typeElement.getQualifiedName() + pSuffix);
+	public PrintWriter createSrcFileWithSuffix(final String pSuffix) throws IOException {
+		final JavaFileObject srcFile = _processingEnvironment.getFiler().createSourceFile(_typeElement.getQualifiedName() + pSuffix);
 		return new java.io.PrintWriter(srcFile.openWriter());
 	}
 
@@ -80,19 +81,19 @@ public class GeneratorEnv {
 		return _typeElement;
 	}
 
-	public void printError(String pFormat, Object... pArgs) {
-		Util.printError(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
+	public void printError(final String pFormat, final Object... pArgs) {
+		GenesisUtils.printError(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
 	}
 
-	public void printNote(String pFormat, Object... pArgs) {
-		Util.printNote(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
+	public void printNote(final String pFormat, final Object... pArgs) {
+		GenesisUtils.printNote(_processingEnvironment.getMessager(), _typeElement, pFormat, pArgs);
 	}
 
-	public void printStackTrace(Throwable pThrowable) {
-		Util.printStackTrace(_processingEnvironment.getMessager(), _typeElement, pThrowable);
+	public void printStackTrace(final Throwable pThrowable) {
+		GenesisUtils.printStackTrace(_processingEnvironment.getMessager(), _typeElement, pThrowable);
 	}
 
-	public String typeMirrorToJavaSrc(TypeMirror pTypeMirror) {
+	public String typeMirrorToJavaSrc(final TypeMirror pTypeMirror) {
 		switch (pTypeMirror.getKind()) {
 			case BOOLEAN:
 				return "Boolean.TYPE";
@@ -112,7 +113,7 @@ public class GeneratorEnv {
 				return "Character.TYPE";
 		}
 
-		TypeMirror erasuredType = _processingEnvironment.getTypeUtils().erasure(pTypeMirror);
+		final TypeMirror erasuredType = _processingEnvironment.getTypeUtils().erasure(pTypeMirror);
 
 		String typeString = erasuredType.toString();
 
@@ -123,7 +124,7 @@ public class GeneratorEnv {
 		return typeString + ".class";
 	}
 
-	void setScriptFileURL(URL pScriptFileURL) {
+	void setScriptFileURL(final URL pScriptFileURL) {
 		_scriptFileURL = pScriptFileURL;
 	}
 

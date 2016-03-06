@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  *
@@ -33,16 +33,16 @@ public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends Ab
 	private final List<String> _customCodes = new ArrayList<>();
 	private final List<AbstractJPattern<IMPL>> _patterns = new ArrayList<>();
 
-	AbstractJType(JTypeUsage pType) {
+	AbstractJType(final JTypeUsage pType) {
 		super(pType, pType.getType().getName());
-		Util.assertTrue(pType.getType().getType() == null);
+		GenesisUtils.assertTrue(pType.getType().getType() == null);
 
 		pType.getType().setType(this);
 		setVisibility(JVisibility.PUBLIC);
 	}
 
-	public final JField addField(JTypeUsage pType, String pName) {
-		JField field = new JField(pType, pName);
+	public final JField addField(final JTypeUsage pType, final String pName) {
+		final JField field = new JField(pType, pName);
 		initField(field);
 		_fields.add(field);
 		return field;
@@ -52,7 +52,7 @@ public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends Ab
 		return Collections.unmodifiableList(_fields);
 	}
 
-	protected void initField(JField pField) {
+	protected void initField(final JField pField) {
 		// nop
 	}
 

@@ -16,6 +16,7 @@
 
 package de.hasait.genesis.processor;
 
+import de.hasait.genesis.processor.util.GenesisUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -23,20 +24,20 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class UtilTest {
+public class GenesisUtilsTest {
 
 	@Test
 	public void testCamelCaseToUpperUnderscore() throws Exception {
-		assertEquals("PROPERTY_NAME", Util.camelCaseToUpperUnderscore("propertyName"));
-		assertEquals("PROPERTY_NAME", Util.camelCaseToUpperUnderscore("PropertyName"));
-		assertEquals("PROPERTY", Util.camelCaseToUpperUnderscore("property"));
-		assertEquals("PROPERTY", Util.camelCaseToUpperUnderscore("Property"));
-		assertEquals("P", Util.camelCaseToUpperUnderscore("p"));
-		assertEquals("P", Util.camelCaseToUpperUnderscore("P"));
-		assertEquals("", Util.camelCaseToUpperUnderscore(""));
-		assertEquals("", Util.camelCaseToUpperUnderscore(""));
-		assertEquals(null, Util.camelCaseToUpperUnderscore(null));
-		assertEquals(null, Util.camelCaseToUpperUnderscore(null));
+		assertEquals("PROPERTY_NAME", GenesisUtils.camelCaseToUpperUnderscore("propertyName"));
+		assertEquals("PROPERTY_NAME", GenesisUtils.camelCaseToUpperUnderscore("PropertyName"));
+		assertEquals("PROPERTY", GenesisUtils.camelCaseToUpperUnderscore("property"));
+		assertEquals("PROPERTY", GenesisUtils.camelCaseToUpperUnderscore("Property"));
+		assertEquals("P", GenesisUtils.camelCaseToUpperUnderscore("p"));
+		assertEquals("P", GenesisUtils.camelCaseToUpperUnderscore("P"));
+		assertEquals("", GenesisUtils.camelCaseToUpperUnderscore(""));
+		assertEquals("", GenesisUtils.camelCaseToUpperUnderscore(""));
+		assertEquals(null, GenesisUtils.camelCaseToUpperUnderscore(null));
+		assertEquals(null, GenesisUtils.camelCaseToUpperUnderscore(null));
 	}
 
 }

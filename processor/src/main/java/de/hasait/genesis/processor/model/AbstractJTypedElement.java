@@ -19,7 +19,8 @@ package de.hasait.genesis.processor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -30,10 +31,10 @@ public abstract class AbstractJTypedElement extends AbstractJNamed {
 	private final List<JAnnotation> _annotations = new ArrayList<>();
 	private boolean _final;
 
-	AbstractJTypedElement(JTypeUsage pType, String pName) {
+	AbstractJTypedElement(final JTypeUsage pType, final String pName) {
 		super(pName);
-		Util.assertNotNull(pType);
-		Util.assertTrue(!Util.isEmpty(pName));
+		GenesisUtils.assertNotNull(pType);
+		GenesisUtils.assertTrue(!StringUtils.isEmpty(pName));
 
 		_type = pType;
 	}
@@ -46,7 +47,7 @@ public abstract class AbstractJTypedElement extends AbstractJNamed {
 		return _final;
 	}
 
-	public final void setFinal(boolean pFinal) {
+	public final void setFinal(final boolean pFinal) {
 		_final = pFinal;
 	}
 

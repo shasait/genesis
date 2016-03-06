@@ -21,8 +21,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.regex.Pattern;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 import freemarker.cache.TemplateLoader;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Filter header and empty lines after it.
@@ -32,34 +34,34 @@ public class HeaderFilterTemplateLoader implements TemplateLoader {
 	public static final Pattern FILTER_PATTERN = Pattern.compile("\\A<#--.*?-->\\s*", Pattern.DOTALL);
 	private final TemplateLoader _delegate;
 
-	public HeaderFilterTemplateLoader(TemplateLoader pDelegate) {
+	public HeaderFilterTemplateLoader(final TemplateLoader pDelegate) {
 		super();
 
-		Util.assertNotNull(pDelegate);
+		GenesisUtils.assertNotNull(pDelegate);
 		_delegate = pDelegate;
 	}
 
 	@Override
-	public void closeTemplateSource(Object templateSource) throws IOException {
+	public void closeTemplateSource(final Object templateSource) throws IOException {
 		// already closed
 	}
 
 	@Override
-	public Object findTemplateSource(String name) throws IOException {
+	public Object findTemplateSource(final String name) throws IOException {
 		return _delegate.findTemplateSource(name);
 	}
 
 	@Override
-	public long getLastModified(Object templateSource) {
+	public long getLastModified(final Object templateSource) {
 		return _delegate.getLastModified(templateSource);
 	}
 
 	@Override
-	public Reader getReader(Object templateSource, String encoding) throws IOException {
-		Reader reader = _delegate.getReader(templateSource, encoding);
+	public Reader getReader(final Object templateSource, final String encoding) throws IOException {
+		final Reader reader = _delegate.getReader(templateSource, encoding);
 		try {
-			String templateContent = Util.toString(reader);
-			templateContent = FILTER_PATTERN.matcher(templateContent).replaceFirst(Util.EMPTY_STRING);
+			String templateContent = IOUtils.toString(reader);
+			templateContent = FILTER_PATTERN.matcher(templateContent).replaceFirst(StringUtils.EMPTY);
 			return new StringReader(templateContent);
 		} finally {
 			_delegate.closeTemplateSource(templateSource);

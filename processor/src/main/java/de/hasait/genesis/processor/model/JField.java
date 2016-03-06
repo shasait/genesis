@@ -23,7 +23,7 @@ public final class JField extends AbstractJDeclaredTypedElement {
 
 	private AbstractJExpression _initializer;
 
-	JField(JTypeUsage pType, String pName) {
+	JField(final JTypeUsage pType, final String pName) {
 		super(pType, pName);
 	}
 
@@ -31,7 +31,7 @@ public final class JField extends AbstractJDeclaredTypedElement {
 		return _initializer;
 	}
 
-	public final void setInitializer(AbstractJExpression pInitializer) {
+	public final void setInitializer(final AbstractJExpression pInitializer) {
 		_initializer = pInitializer;
 	}
 

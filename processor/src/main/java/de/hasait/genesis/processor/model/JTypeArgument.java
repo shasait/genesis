@@ -25,15 +25,15 @@ public final class JTypeArgument {
 		return new JTypeArgument(null, false, false);
 	}
 
-	public static JTypeArgument createExact(JTypeUsage pType) {
+	public static JTypeArgument createExact(final JTypeUsage pType) {
 		return new JTypeArgument(pType, false, false);
 	}
 
-	public static JTypeArgument createExtends(JTypeUsage pType) {
+	public static JTypeArgument createExtends(final JTypeUsage pType) {
 		return new JTypeArgument(pType, true, false);
 	}
 
-	public static JTypeArgument createSuper(JTypeUsage pType) {
+	public static JTypeArgument createSuper(final JTypeUsage pType) {
 		return new JTypeArgument(pType, false, true);
 	}
 
@@ -41,7 +41,7 @@ public final class JTypeArgument {
 	private final boolean _extends;
 	private final boolean _super;
 
-	private JTypeArgument(JTypeUsage pType, boolean pExtends, boolean pSuper) {
+	private JTypeArgument(final JTypeUsage pType, final boolean pExtends, final boolean pSuper) {
 		_type = pType;
 		_extends = pExtends;
 		_super = pSuper;

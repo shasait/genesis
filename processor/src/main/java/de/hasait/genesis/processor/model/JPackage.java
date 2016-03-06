@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -37,9 +38,9 @@ public final class JPackage extends AbstractJNamed {
 
 	private final Map<String, JTypeReference> _typesByName = new HashMap<>();
 
-	JPackage(JPackage pParent, String pName) {
+	JPackage(final JPackage pParent, final String pName) {
 		super(pName);
-		Util.assertNotNull(pParent);
+		GenesisUtils.assertNotNull(pParent);
 
 		_parent = pParent;
 		_root = false;
@@ -57,17 +58,17 @@ public final class JPackage extends AbstractJNamed {
 		_qualifiedName = null;
 	}
 
-	public String buildQualifiedName(String pRelativeName) {
+	public String buildQualifiedName(final String pRelativeName) {
 		return _root ? pRelativeName : getQualifiedName() + "." + pRelativeName;
 	}
 
-	public JTypeReference createOfGetTypeReference(String pQualifiedTypeName) {
+	public JTypeReference createOfGetTypeReference(final String pQualifiedTypeName) {
 		return createOrGetChildObject(pQualifiedTypeName,
 									  (pParent, pName) -> _typesByName.computeIfAbsent(pName, pUnused -> new JTypeReference(pParent, pName))
 		);
 	}
 
-	public JPackage createOrGetChildPackage(String pQualifiedPackageName) {
+	public JPackage createOrGetChildPackage(final String pQualifiedPackageName) {
 		return createOrGetChildObject(pQualifiedPackageName,
 									  (pParent, pName) -> _childrenByName.computeIfAbsent(pName, pUnused -> new JPackage(pParent, pName))
 		);
@@ -85,13 +86,13 @@ public final class JPackage extends AbstractJNamed {
 		return _root;
 	}
 
-	private <T> T createOrGetChildObject(String pQualifiedName, BiFunction<JPackage, String, T> pCreator) {
-		Util.assertTrue(!Util.isEmpty(pQualifiedName));
+	private <T> T createOrGetChildObject(final String pQualifiedName, final BiFunction<JPackage, String, T> pCreator) {
+		GenesisUtils.assertTrue(!StringUtils.isEmpty(pQualifiedName));
 
-		String[] parts = pQualifiedName.split("\\.", 2);
+		final String[] parts = pQualifiedName.split("\\.", 2);
 
 		if (parts.length == 2) {
-			JPackage child = _childrenByName.computeIfAbsent(parts[0], pName -> new JPackage(this, pName));
+			final JPackage child = _childrenByName.computeIfAbsent(parts[0], pName -> new JPackage(this, pName));
 			return child.createOrGetChildObject(parts[1], pCreator);
 		} else {
 			return pCreator.apply(this, parts[0]);

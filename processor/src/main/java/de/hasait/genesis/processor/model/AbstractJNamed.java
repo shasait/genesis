@@ -16,7 +16,8 @@
 
 package de.hasait.genesis.processor.model;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -25,9 +26,9 @@ public abstract class AbstractJNamed {
 
 	private final String _name;
 
-	AbstractJNamed(String pName) {
+	AbstractJNamed(final String pName) {
 		super();
-		Util.assertTrue(!Util.isEmpty(pName));
+		GenesisUtils.assertTrue(!StringUtils.isEmpty(pName));
 
 		_name = pName;
 	}

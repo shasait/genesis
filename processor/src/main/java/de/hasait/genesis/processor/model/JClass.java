@@ -21,7 +21,7 @@ package de.hasait.genesis.processor.model;
  */
 public final class JClass extends AbstractJType<JClass> {
 
-	JClass(JTypeUsage pType) {
+	JClass(final JTypeUsage pType) {
 		super(pType);
 	}
 

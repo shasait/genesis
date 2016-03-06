@@ -21,7 +21,7 @@ package de.hasait.genesis.processor.model;
  */
 public final class JEnum extends AbstractJType<JEnum> {
 
-	JEnum(JTypeUsage pType) {
+	JEnum(final JTypeUsage pType) {
 		super(pType);
 	}
 

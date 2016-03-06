@@ -23,7 +23,7 @@ public final class JLocalVariableStatement extends AbstractJTypedElement {
 
 	private AbstractJExpression _initializer;
 
-	JLocalVariableStatement(JTypeUsage pType, String pName) {
+	JLocalVariableStatement(final JTypeUsage pType, final String pName) {
 		super(pType, pName);
 	}
 
@@ -31,7 +31,7 @@ public final class JLocalVariableStatement extends AbstractJTypedElement {
 		return _initializer;
 	}
 
-	public void setInitializer(AbstractJExpression pInitializer) {
+	public void setInitializer(final AbstractJExpression pInitializer) {
 		_initializer = pInitializer;
 	}
 

@@ -24,8 +24,8 @@ import javax.tools.JavaFileObject;
 
 import de.hasait.genesis.processor.GeneratorEnv;
 import de.hasait.genesis.processor.ModelWriter;
-import de.hasait.genesis.processor.Util;
 import de.hasait.genesis.processor.model.AbstractJType;
+import de.hasait.genesis.processor.util.GenesisUtils;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -36,13 +36,14 @@ import freemarker.template.TemplateException;
  */
 public class FreemarkerModelWriter implements ModelWriter {
 
-	static void write(Configuration pConfiguration, Writer pWriter, Object pModel, Map pParams) throws IOException, TemplateException {
+	static void write(final Configuration pConfiguration, final Writer pWriter, final Object pModel, final Map pParams)
+			throws IOException, TemplateException {
 		write(pConfiguration, pWriter, pModel.getClass().getSimpleName() + ".ftl", pModel, pParams);
 	}
 
-	static void write(Configuration pConfiguration, Writer pWriter, String pTemplateName, Object pModel, Map pParams)
+	static void write(final Configuration pConfiguration, final Writer pWriter, final String pTemplateName, final Object pModel, final Map pParams)
 			throws IOException, TemplateException {
-		Template template = pConfiguration.getTemplate(pTemplateName);
+		final Template template = pConfiguration.getTemplate(pTemplateName);
 		template.process(new Context(pModel, pParams), pWriter);
 	}
 
@@ -54,17 +55,17 @@ public class FreemarkerModelWriter implements ModelWriter {
 		_configuration = new Configuration(Configuration.VERSION_2_3_23);
 		_configuration.setDefaultEncoding("UTF-8");
 		_configuration.setSharedVariable("delegate", new DelegateDirective());
-		ClassTemplateLoader templateLoader = new ClassTemplateLoader(getClass(), "/genesis/ftl/");
+		final ClassTemplateLoader templateLoader = new ClassTemplateLoader(getClass(), "/genesis/ftl/");
 		_configuration.setTemplateLoader(new HeaderFilterTemplateLoader(templateLoader));
 	}
 
 	@Override
-	public void write(GeneratorEnv pGeneratorEnv) throws Exception {
-		Util.assertNotNull(pGeneratorEnv);
+	public void write(final GeneratorEnv pGeneratorEnv) throws Exception {
+		GenesisUtils.assertNotNull(pGeneratorEnv);
 
-		for (AbstractJType<?> jType : pGeneratorEnv.getModel().getCreatedTypes()) {
+		for (final AbstractJType<?> jType : pGeneratorEnv.getModel().getCreatedTypes()) {
 			pGeneratorEnv.printNote("New Type: %s", jType);
-			JavaFileObject sourceFile = pGeneratorEnv.createSourceFile(jType.getType().getType().getQualifiedName());
+			final JavaFileObject sourceFile = pGeneratorEnv.createSourceFile(jType.getType().getType().getQualifiedName());
 			try (Writer writer = sourceFile.openWriter()) {
 				write(_configuration, writer, jType, null);
 			}
@@ -76,7 +77,7 @@ public class FreemarkerModelWriter implements ModelWriter {
 		private final Object _model;
 		private final Map _params;
 
-		public Context(Object pModel, Map pParams) {
+		public Context(final Object pModel, final Map pParams) {
 			_model = pModel;
 			_params = pParams;
 		}

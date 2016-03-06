@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package de.hasait.genesis.processor;
+package de.hasait.genesis.processor.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,40 +36,43 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+import de.hasait.genesis.processor.GenesisProcessor;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  */
-public final class Util {
+public final class GenesisUtils {
 
-	public static final String EMPTY_STRING = "";
 	private static final List<String> GETTER_PREFIXES = Collections.unmodifiableList(Arrays.asList("get", "is"));
 	private static final String SETTER_PREFIX = "set";
 
-	public static void assertNotNull(Object pValue) {
+	public static void assertNotNull(final Object pValue) {
 		if (pValue == null) {
 			throw new NullPointerException();
 		}
 	}
 
-	public static void assertTrue(boolean pTrue) {
+	public static void assertTrue(final boolean pTrue) {
 		if (!pTrue) {
 			throw new RuntimeException();
 		}
 	}
 
-	public static String camelCaseToUpperUnderscore(String pInput) {
-		if (isEmpty(pInput)) {
+	public static String camelCaseToUpperUnderscore(final String pInput) {
+		if (StringUtils.isEmpty(pInput)) {
 			return pInput;
 		}
 
-		Pattern camelPattern = Pattern.compile("\\p{Lower}\\p{Upper}");
-		Matcher camelMatcher = camelPattern.matcher(pInput);
+		final Pattern camelPattern = Pattern.compile("\\p{Lower}\\p{Upper}");
+		final Matcher camelMatcher = camelPattern.matcher(pInput);
 
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 
 		int current = 0;
 		while (camelMatcher.find(current)) {
-			int split = camelMatcher.start() + 1;
+			final int split = camelMatcher.start() + 1;
 			result.append(pInput.substring(current, split).toUpperCase());
 			result.append('_');
 			current = split;
@@ -80,19 +82,8 @@ public final class Util {
 		return result.toString();
 	}
 
-	public static long copy(Reader pInput, Writer pOutput) throws IOException {
-		char[] buffer = new char[8192];
-		long total = 0;
-		int chunk;
-		while (-1 != (chunk = pInput.read(buffer))) {
-			pOutput.write(buffer, 0, chunk);
-			total += chunk;
-		}
-		return total;
-	}
-
-	public static String determinePropertyNameFromAccessor(Element pElement) {
-		for (String prefix : GETTER_PREFIXES) {
+	public static String determinePropertyNameFromAccessor(final Element pElement) {
+		for (final String prefix : GETTER_PREFIXES) {
 			if (isGetter(pElement, prefix)) {
 				return extractPropertyNameFromAccessor(pElement.getSimpleName().toString(), prefix);
 			}
@@ -105,26 +96,26 @@ public final class Util {
 		return null;
 	}
 
-	public static TypeMirror determinePropertyTypeFromAccessor(Element pElement) {
+	public static TypeMirror determinePropertyTypeFromAccessor(final Element pElement) {
 		if (isGetter(pElement)) {
-			ExecutableElement element = (ExecutableElement) pElement;
+			final ExecutableElement element = (ExecutableElement) pElement;
 			return element.getReturnType();
 		}
 
 		if (isSetter(pElement)) {
-			ExecutableElement element = (ExecutableElement) pElement;
+			final ExecutableElement element = (ExecutableElement) pElement;
 			return element.getParameters().get(0).asType();
 		}
 
 		return null;
 	}
 
-	public static String extractPropertyNameFromAccessor(String pAccessorName, String pPrefix) {
-		String upperCamelCase = pAccessorName.substring(pPrefix.length());
+	public static String extractPropertyNameFromAccessor(final String pAccessorName, final String pPrefix) {
+		final String upperCamelCase = pAccessorName.substring(pPrefix.length());
 		return firstLetterToLowercase(upperCamelCase);
 	}
 
-	public static PackageElement findPackageElement(Element pElement) {
+	public static PackageElement findPackageElement(final Element pElement) {
 		Element currentElement = pElement;
 		while (currentElement != null && !(currentElement instanceof PackageElement)) {
 			currentElement = currentElement.getEnclosingElement();
@@ -133,20 +124,12 @@ public final class Util {
 		return (PackageElement) currentElement;
 	}
 
-	public static String firstLetterToLowercase(String pInput) {
+	public static String firstLetterToLowercase(final String pInput) {
 		return pInput.substring(0, 1).toLowerCase() + pInput.substring(1);
 	}
 
-	public static boolean isBlank(String pInput) {
-		return pInput == null || EMPTY_STRING.equals(pInput.trim());
-	}
-
-	public static boolean isEmpty(String pInput) {
-		return pInput == null || EMPTY_STRING.equals(pInput);
-	}
-
-	public static boolean isGetter(Element pElement) {
-		for (String prefix : GETTER_PREFIXES) {
+	public static boolean isGetter(final Element pElement) {
+		for (final String prefix : GETTER_PREFIXES) {
 			if (isGetter(pElement, prefix)) {
 				return true;
 			}
@@ -155,12 +138,12 @@ public final class Util {
 		return false;
 	}
 
-	public static boolean isGetter(Element pElement, String pPrefix) {
-		Util.assertNotNull(pPrefix);
+	public static boolean isGetter(final Element pElement, final String pPrefix) {
+		GenesisUtils.assertNotNull(pPrefix);
 
 		if (isPublicMemberMethod(pElement)) {
-			ExecutableElement element = (ExecutableElement) pElement;
-			String simpleName = element.getSimpleName().toString();
+			final ExecutableElement element = (ExecutableElement) pElement;
+			final String simpleName = element.getSimpleName().toString();
 			return simpleName.startsWith(pPrefix) && simpleName.length() > pPrefix.length() //
 					&& element.getReturnType() != null && element.getParameters().isEmpty() //
 					;
@@ -169,25 +152,25 @@ public final class Util {
 		return false;
 	}
 
-	public static boolean isPublicMemberMethod(Element pElement) {
+	public static boolean isPublicMemberMethod(final Element pElement) {
 		if (pElement != null && pElement.getKind() == ElementKind.METHOD) {
-			Set<Modifier> modifiers = pElement.getModifiers();
+			final Set<Modifier> modifiers = pElement.getModifiers();
 			return modifiers.contains(Modifier.PUBLIC) && !modifiers.contains(Modifier.STATIC);
 		}
 
 		return false;
 	}
 
-	public static boolean isSetter(Element pElement) {
+	public static boolean isSetter(final Element pElement) {
 		return isSetter(pElement, SETTER_PREFIX);
 	}
 
-	public static boolean isSetter(Element pElement, String pPrefix) {
-		Util.assertNotNull(pPrefix);
+	public static boolean isSetter(final Element pElement, final String pPrefix) {
+		GenesisUtils.assertNotNull(pPrefix);
 
 		if (isPublicMemberMethod(pElement)) {
-			ExecutableElement element = (ExecutableElement) pElement;
-			String simpleName = element.getSimpleName().toString();
+			final ExecutableElement element = (ExecutableElement) pElement;
+			final String simpleName = element.getSimpleName().toString();
 
 			return simpleName.startsWith(pPrefix) && simpleName.length() > pPrefix.length() //
 					&& element.getParameters().size() == 1 // no return type check to support fluent setters
@@ -197,33 +180,45 @@ public final class Util {
 		return false;
 	}
 
-	public static void printError(Messager pMessager, Element pElement, String pFormat, Object... pArgs) {
-		String message = String.format(pFormat, pArgs);
+	public static void printError(final Messager pMessager, final Element pElement, final String pFormat, final Object... pArgs) {
+		final String message = String.format(pFormat, pArgs);
 		pMessager.printMessage(Diagnostic.Kind.ERROR, message, pElement);
 	}
 
-	public static void printNote(Messager pMessager, Element pElement, String pFormat, Object... pArgs) {
-		String message = String.format(pFormat, pArgs);
+	public static void printNote(final Messager pMessager, final Element pElement, final String pFormat, final Object... pArgs) {
+		final String message = String.format(pFormat, pArgs);
 		pMessager.printMessage(Diagnostic.Kind.NOTE, message, pElement);
 	}
 
-	public static void printStackTrace(Messager pMessager, Element pElement, Throwable pThrowable) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
+	public static void printStackTrace(final Messager pMessager, final Element pElement, final Throwable pThrowable) {
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
 		pThrowable.printStackTrace(pw);
 		pw.flush();
-		String stackTrace = sw.toString();
-		String message = String.format("Unexpected throwable in %s: %s", GenesisProcessor.class.getSimpleName(), stackTrace);
+		final String stackTrace = sw.toString();
+		final String message = String.format("Unexpected throwable in %s: %s", GenesisProcessor.class.getSimpleName(), stackTrace);
 		pMessager.printMessage(Diagnostic.Kind.ERROR, message, pElement);
 	}
 
-	public static String toString(Reader pInput) throws IOException {
-		StringWriter sw = new StringWriter();
-		copy(pInput, sw);
-		return sw.toString();
+	public static boolean writeIfNonWhitespaceChanged(final String pContent, final File pFile) throws IOException {
+		final String content = StringUtils.defaultString(pContent);
+		final String currentContent = FileUtils.readFileToString(pFile);
+		if (currentContent != null) {
+			if (reduceWhitespacesToSpace(content).equals(reduceWhitespacesToSpace(currentContent))) {
+				return false;
+			}
+		}
+		FileUtils.write(pFile, content);
+		return true;
 	}
 
-	private Util() {
+	private static String reduceWhitespacesToSpace(final String pString) {
+		String result = pString;
+		result = result.replaceAll("\\s+", " "); //$NON-NLS-1$ //$NON-NLS-2$
+		return result;
+	}
+
+	private GenesisUtils() {
 		super();
 	}
 }

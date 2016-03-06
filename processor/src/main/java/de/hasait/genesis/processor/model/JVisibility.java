@@ -28,7 +28,7 @@ public enum JVisibility {
 
 	private final String _src;
 
-	JVisibility(String pSrc) {
+	JVisibility(final String pSrc) {
 		_src = pSrc;
 	}
 

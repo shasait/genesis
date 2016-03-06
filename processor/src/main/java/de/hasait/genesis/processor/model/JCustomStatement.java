@@ -31,7 +31,7 @@ public final class JCustomStatement extends AbstractJStatement {
 		return _customCode;
 	}
 
-	public final void setCustomCode(String pCustomCode) {
+	public final void setCustomCode(final String pCustomCode) {
 		_customCode = pCustomCode;
 	}
 

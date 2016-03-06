@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  *
@@ -35,34 +35,34 @@ public final class JModel {
 
 	private final Set<AbstractJType<?>> _createdTypes = new HashSet<>();
 
-	public JModel(String pBaseQualifiedPackageName, String pBaseTypeName) {
+	public JModel(final String pBaseQualifiedPackageName, final String pBaseTypeName) {
 		super();
 
 		_baseQualifiedPackageName = pBaseQualifiedPackageName;
 		_baseTypeName = pBaseTypeName;
 	}
 
-	public JClass createClass(String pQualifiedClassName) {
-		JTypeReference jTypeReference = _rootPackage.createOfGetTypeReference(pQualifiedClassName);
-		JTypeUsage jTypeUsage = jTypeReference.createUsage();
-		JClass jClass = new JClass(jTypeUsage);
+	public JClass createClass(final String pQualifiedClassName) {
+		final JTypeReference jTypeReference = _rootPackage.createOfGetTypeReference(pQualifiedClassName);
+		final JTypeUsage jTypeUsage = jTypeReference.createUsage();
+		final JClass jClass = new JClass(jTypeUsage);
 		_createdTypes.add(jClass);
 		return jClass;
 	}
 
-	public JTypeReference createOrGetTypeReference(String pQualifiedTypeName) {
+	public JTypeReference createOrGetTypeReference(final String pQualifiedTypeName) {
 		return _rootPackage.createOfGetTypeReference(pQualifiedTypeName);
 	}
 
-	public JTypeReference createOrGetTypeReference(Class<?> pClass) {
-		Util.assertNotNull(pClass);
+	public JTypeReference createOrGetTypeReference(final Class<?> pClass) {
+		GenesisUtils.assertNotNull(pClass);
 
 		return createOrGetTypeReference(pClass.getName());
 	}
 
-	public JClass createRelativeClass(String pSuffix) {
-		String className = _baseTypeName + pSuffix;
-		String qualifiedClassName = _baseQualifiedPackageName == null ? className : _baseQualifiedPackageName + "." + className;
+	public JClass createRelativeClass(final String pSuffix) {
+		final String className = _baseTypeName + pSuffix;
+		final String qualifiedClassName = _baseQualifiedPackageName == null ? className : _baseQualifiedPackageName + "." + className;
 		return createClass(qualifiedClassName);
 	}
 

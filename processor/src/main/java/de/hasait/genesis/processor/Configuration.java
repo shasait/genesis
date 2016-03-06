@@ -36,11 +36,11 @@ public class Configuration {
 
 	private ModelWriter _modelWriter;
 
-	public void addLocation(String pLocation) {
+	public void addLocation(final String pLocation) {
 		_locations.add(pLocation);
 	}
 
-	public Consumer<Element> getElementProcessor(String pAnnotationQualifiedName) {
+	public Consumer<Element> getElementProcessor(final String pAnnotationQualifiedName) {
 		return _elementProcessors.get(pAnnotationQualifiedName);
 	}
 
@@ -52,11 +52,11 @@ public class Configuration {
 		return _modelWriter;
 	}
 
-	public void registerElementProcessor(String pAnnotationQualifiedName, Consumer<Element> pElementProcessor) {
+	public void registerElementProcessor(final String pAnnotationQualifiedName, final Consumer<Element> pElementProcessor) {
 		_elementProcessors.put(pAnnotationQualifiedName, pElementProcessor);
 	}
 
-	public void setModelWriter(ModelWriter pModelWriter) {
+	public void setModelWriter(final ModelWriter pModelWriter) {
 		_modelWriter = pModelWriter;
 	}
 

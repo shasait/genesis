@@ -21,7 +21,7 @@ package de.hasait.genesis.processor.model;
  */
 public final class JMethodArgument extends AbstractJTypedElement {
 
-	JMethodArgument(JTypeUsage pType, String pName) {
+	JMethodArgument(final JTypeUsage pType, final String pName) {
 		super(pType, pName);
 	}
 

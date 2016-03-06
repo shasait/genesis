@@ -21,7 +21,7 @@ package de.hasait.genesis.processor.model;
  */
 public final class JAbstractMethod extends AbstractJMethod {
 
-	JAbstractMethod(JTypeUsage pType, String pName) {
+	JAbstractMethod(final JTypeUsage pType, final String pName) {
 		super(pType, pName);
 	}
 

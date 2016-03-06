@@ -16,7 +16,7 @@
 
 package de.hasait.genesis.processor.model;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  *
@@ -27,9 +27,9 @@ public final class JComment {
 
 	private String _text;
 
-	JComment(JCommentType pType) {
+	JComment(final JCommentType pType) {
 		super();
-		Util.assertNotNull(pType);
+		GenesisUtils.assertNotNull(pType);
 
 		_type = pType;
 	}
@@ -38,7 +38,7 @@ public final class JComment {
 		return _text;
 	}
 
-	public void setText(String pText) {
+	public void setText(final String pText) {
 		_text = pText;
 	}
 

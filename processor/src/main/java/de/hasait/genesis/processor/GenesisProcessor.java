@@ -39,7 +39,9 @@ import javax.script.ScriptEngineManager;
 
 import de.hasait.genesis.annotations.Genesis;
 import de.hasait.genesis.processor.freemarker.FreemarkerModelWriter;
+import de.hasait.genesis.processor.util.GenesisUtils;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -60,52 +62,49 @@ public class GenesisProcessor extends AbstractProcessor {
 	private Configuration _configuration;
 
 	@Override
-	public synchronized void init(ProcessingEnvironment pProcessingEnv) {
+	public synchronized void init(final ProcessingEnvironment pProcessingEnv) {
 		super.init(pProcessingEnv);
 
 		_configuration = createConfiguration();
 	}
 
 	@Override
-	public boolean process(Set<? extends TypeElement> pAnnotations, RoundEnvironment pRoundEnv) {
+	public boolean process(final Set<? extends TypeElement> pAnnotations, final RoundEnvironment pRoundEnv) {
 
-		for (TypeElement annotation : pAnnotations) {
-			Set<? extends Element> annotatedElements;
-			try {
-				annotatedElements = pRoundEnv.getElementsAnnotatedWith(annotation);
-			} catch (Throwable t) {
-				printStackTrace(annotation, t);
-				continue;
-			}
+		for (final TypeElement annotation : pAnnotations) {
+			final Consumer<Element> elementProcessor = _configuration.getElementProcessor(annotation.getQualifiedName().toString());
 
-			Consumer<Element> elementProcessor = _configuration.getElementProcessor(annotation.getQualifiedName().toString());
+			if (elementProcessor != null) {
+				final Set<? extends Element> annotatedElements;
+				try {
+					annotatedElements = pRoundEnv.getElementsAnnotatedWith(annotation);
+				} catch (final Throwable t) {
+					printStackTrace(annotation, t);
+					continue;
+				}
 
-			for (Element annotatedElement : annotatedElements) {
-				if (elementProcessor != null) {
+				for (final Element annotatedElement : annotatedElements) {
 					printNote(annotatedElement, "Processing: %s, %s", annotatedElement, annotation);
 
 					try {
 						elementProcessor.accept(annotatedElement);
-					} catch (Throwable t) {
+					} catch (final Throwable t) {
 						printStackTrace(annotatedElement, t);
 						break;
 					}
-				} else {
-					printError(annotatedElement, "No element processor found: %s, %s", annotatedElement, annotation);
 				}
 			}
-
 		}
 
 		return true;
 	}
 
 	private Configuration createConfiguration() {
-		Configuration configuration = new Configuration();
+		final Configuration configuration = new Configuration();
 		configuration.addLocation("genesis");
-		String rawLocations = processingEnv.getOptions().get(OPTION___LOCATIONS);
+		final String rawLocations = processingEnv.getOptions().get(OPTION___LOCATIONS);
 		if (rawLocations != null) {
-			for (String location : rawLocations.split(SCRIPT_LOCATIONS_SPLIT)) {
+			for (final String location : rawLocations.split(SCRIPT_LOCATIONS_SPLIT)) {
 				configuration.addLocation(location);
 			}
 		}
@@ -117,59 +116,59 @@ public class GenesisProcessor extends AbstractProcessor {
 		return configuration;
 	}
 
-	private ScriptEngine determineScriptEngine(String pScriptFileExtension, ClassLoader pClassLoader) {
-		ScriptEngine engine;
-		NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
+	private ScriptEngine determineScriptEngine(final String pScriptFileExtension, final ClassLoader pClassLoader) {
+		final ScriptEngine engine;
+		final NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
 		if (nashornScriptEngineFactory.getExtensions().contains(pScriptFileExtension)) {
 			engine = nashornScriptEngineFactory.getScriptEngine(pClassLoader);
 		} else {
-			ScriptEngineManager factory = new ScriptEngineManager();
+			final ScriptEngineManager factory = new ScriptEngineManager();
 			engine = factory.getEngineByExtension(pScriptFileExtension);
 		}
 		return engine;
 	}
 
-	private void printError(Element pElement, String pFormat, Object... pArgs) {
-		Util.printError(processingEnv.getMessager(), pElement, pFormat, pArgs);
+	private void printError(final Element pElement, final String pFormat, final Object... pArgs) {
+		GenesisUtils.printError(processingEnv.getMessager(), pElement, pFormat, pArgs);
 	}
 
-	private void printNote(Element pElement, String pFormat, Object... pArgs) {
-		Util.printNote(processingEnv.getMessager(), pElement, pFormat, pArgs);
+	private void printNote(final Element pElement, final String pFormat, final Object... pArgs) {
+		GenesisUtils.printNote(processingEnv.getMessager(), pElement, pFormat, pArgs);
 	}
 
-	private void printStackTrace(Element pElement, Throwable pThrowable) {
-		Util.printStackTrace(processingEnv.getMessager(), pElement, pThrowable);
+	private void printStackTrace(final Element pElement, final Throwable pThrowable) {
+		GenesisUtils.printStackTrace(processingEnv.getMessager(), pElement, pThrowable);
 	}
 
-	private void processGenesis(Element pAnnotatedElement) {
+	private void processGenesis(final Element pAnnotatedElement) {
 		try {
 			if (pAnnotatedElement.getKind() != ElementKind.CLASS) {
 				return;
 			}
 
-			ClassLoader classLoader = getClass().getClassLoader();
+			final ClassLoader classLoader = getClass().getClassLoader();
 
-			TypeElement classElement = (TypeElement) pAnnotatedElement;
+			final TypeElement classElement = (TypeElement) pAnnotatedElement;
 
-			Genesis genesisAnnotation = classElement.getAnnotation(Genesis.class);
-			String parameterExecute = genesisAnnotation.execute();
-			if (Util.isBlank(parameterExecute)) {
+			final Genesis genesisAnnotation = classElement.getAnnotation(Genesis.class);
+			final String parameterExecute = genesisAnnotation.execute();
+			if (StringUtils.isBlank(parameterExecute)) {
 				printError(classElement, "Parameter \"execute\" must not be blank");
 				return;
 			}
 
-			GeneratorEnv generatorEnv = new GeneratorEnv(processingEnv, classElement, genesisAnnotation.args());
+			final GeneratorEnv generatorEnv = new GeneratorEnv(processingEnv, classElement, genesisAnnotation.args());
 
 			if (parameterExecute.startsWith(EXECUTE_PREFIX_CLASS)) {
-				String className = parameterExecute.substring(EXECUTE_PREFIX_CLASS.length());
-				Class<?> delegateClass = classLoader.loadClass(className);
+				final String className = parameterExecute.substring(EXECUTE_PREFIX_CLASS.length());
+				final Class<?> delegateClass = classLoader.loadClass(className);
 				delegateClass.getMethod("genesis", GeneratorEnv.class).invoke(null, generatorEnv);
 			} else if (parameterExecute.startsWith(EXECUTE_PREFIX_SCRIPT_RESOURCE)) {
-				String scriptResourcePath = parameterExecute.substring(EXECUTE_PREFIX_SCRIPT_RESOURCE.length());
+				final String scriptResourcePath = parameterExecute.substring(EXECUTE_PREFIX_SCRIPT_RESOURCE.length());
 
 				URL scriptFileURL = classLoader.getResource(scriptResourcePath);
 				if (scriptFileURL == null) {
-					for (String scriptLocationString : _configuration.getLocations()) {
+					for (final String scriptLocationString : _configuration.getLocations()) {
 						scriptFileURL = classLoader.getResource(scriptLocationString + "/" + scriptResourcePath);
 						if (scriptFileURL != null) {
 							break;
@@ -181,15 +180,15 @@ public class GenesisProcessor extends AbstractProcessor {
 					return;
 				}
 
-				int indexOfDot = scriptResourcePath.indexOf('.');
+				final int indexOfDot = scriptResourcePath.indexOf('.');
 				if (indexOfDot <= 1) {
 					printError(classElement, "Script name \"%s\" must have an extension", scriptResourcePath);
 					return;
 				}
 
-				String scriptFileExtension = scriptResourcePath.substring(indexOfDot + 1);
+				final String scriptFileExtension = scriptResourcePath.substring(indexOfDot + 1);
 
-				ScriptEngine engine = determineScriptEngine(scriptFileExtension, classLoader);
+				final ScriptEngine engine = determineScriptEngine(scriptFileExtension, classLoader);
 
 				if (engine == null) {
 					printError(classElement, "Script extension \"%s\" unsupported", scriptFileExtension);
@@ -208,7 +207,7 @@ public class GenesisProcessor extends AbstractProcessor {
 
 			_configuration.getModelWriter().write(generatorEnv);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

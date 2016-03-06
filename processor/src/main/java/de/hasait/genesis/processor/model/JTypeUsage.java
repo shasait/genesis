@@ -19,7 +19,7 @@ package de.hasait.genesis.processor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hasait.genesis.processor.Util;
+import de.hasait.genesis.processor.util.GenesisUtils;
 
 /**
  * Usage of a type with optional generic arguments.
@@ -30,19 +30,19 @@ public final class JTypeUsage {
 
 	private final List<JTypeArgument> _arguments = new ArrayList<>();
 
-	public JTypeUsage(JTypeReference pType, JTypeArgument... pArguments) {
+	public JTypeUsage(final JTypeReference pType, final JTypeArgument... pArguments) {
 		super();
-		Util.assertNotNull(pType);
+		GenesisUtils.assertNotNull(pType);
 
 		_type = pType;
 
-		for (JTypeArgument argument : pArguments) {
+		for (final JTypeArgument argument : pArguments) {
 			addArgument(argument);
 		}
 	}
 
-	public void addArgument(JTypeArgument pArgument) {
-		Util.assertNotNull(pArgument);
+	public void addArgument(final JTypeArgument pArgument) {
+		GenesisUtils.assertNotNull(pArgument);
 
 		_arguments.add(pArgument);
 	}

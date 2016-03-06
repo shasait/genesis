@@ -31,7 +31,7 @@ public final class JExpressionStatement extends AbstractJStatement {
 		return _expression;
 	}
 
-	public final void setExpression(AbstractJExpression pExpression) {
+	public final void setExpression(final AbstractJExpression pExpression) {
 		_expression = pExpression;
 	}
 

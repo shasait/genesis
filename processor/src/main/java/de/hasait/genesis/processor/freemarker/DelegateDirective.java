@@ -38,12 +38,12 @@ public class DelegateDirective implements TemplateDirectiveModel {
 			"unchecked"
 	})
 	@Override
-	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
+	public void execute(final Environment env, final Map params, final TemplateModel[] loopVars, final TemplateDirectiveBody body)
 			throws TemplateException, IOException {
-		Map delegateParams = new HashMap(params);
-		Object model = DeepUnwrap.unwrap((TemplateModel) delegateParams.remove("model"));
-		SimpleScalar template = (SimpleScalar) delegateParams.remove("template");
-		String templateName = template == null ? null : template.getAsString();
+		final Map delegateParams = new HashMap(params);
+		final Object model = DeepUnwrap.unwrap((TemplateModel) delegateParams.remove("model"));
+		final SimpleScalar template = (SimpleScalar) delegateParams.remove("template");
+		final String templateName = template == null ? null : template.getAsString();
 		if (templateName != null) {
 			FreemarkerModelWriter.write(env.getConfiguration(), env.getOut(), templateName, model, delegateParams);
 		} else {

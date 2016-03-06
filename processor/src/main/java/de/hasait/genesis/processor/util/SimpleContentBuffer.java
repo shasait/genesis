@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package de.hasait.genesis.processor.model;
+package de.hasait.genesis.processor.util;
 
-import java.util.ArrayList;
-import java.util.List;
+public final class SimpleContentBuffer extends AbstractContentBuffer<SimpleContentBuffer> {
 
-/**
- *
- */
-public final class JMethod extends AbstractJMethod {
+	public SimpleContentBuffer() {
+		super();
+	}
 
-	private final List<AbstractJStatement> _statements = new ArrayList<>();
+	public SimpleContentBuffer(final String pDefaultIndent) {
+		super(pDefaultIndent);
+	}
 
-	JMethod(final JTypeUsage pType, final String pName) {
-		super(pType, pName);
+	public SimpleContentBuffer(final String pDefaultIndent, final String pNewline) {
+		super(pDefaultIndent, pNewline);
 	}
 
 }

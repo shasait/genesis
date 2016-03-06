@@ -27,7 +27,7 @@ public final class JCustomExpression extends AbstractJExpression {
 		super();
 	}
 
-	public JCustomExpression(String pCustomCode) {
+	public JCustomExpression(final String pCustomCode) {
 		super();
 
 		setCustomCode(pCustomCode);
@@ -37,7 +37,7 @@ public final class JCustomExpression extends AbstractJExpression {
 		return _customCode;
 	}
 
-	public final void setCustomCode(String pCustomCode) {
+	public final void setCustomCode(final String pCustomCode) {
 		_customCode = pCustomCode;
 	}
 

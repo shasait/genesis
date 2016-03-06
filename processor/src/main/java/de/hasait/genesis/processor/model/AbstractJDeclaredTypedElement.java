@@ -28,7 +28,7 @@ public abstract class AbstractJDeclaredTypedElement extends AbstractJTypedElemen
 	private JVisibility _visibility = JVisibility.PRIVATE;
 	private boolean _static;
 
-	AbstractJDeclaredTypedElement(JTypeUsage pType, String pName) {
+	AbstractJDeclaredTypedElement(final JTypeUsage pType, final String pName) {
 		super(pType, pName);
 	}
 
@@ -40,11 +40,11 @@ public abstract class AbstractJDeclaredTypedElement extends AbstractJTypedElemen
 		return _static;
 	}
 
-	public final void setStatic(boolean pStatic) {
+	public final void setStatic(final boolean pStatic) {
 		_static = pStatic;
 	}
 
-	public final void setVisibility(JVisibility pVisibility) {
+	public final void setVisibility(final JVisibility pVisibility) {
 		_visibility = pVisibility;
 	}
 

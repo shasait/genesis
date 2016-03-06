@@ -28,8 +28,8 @@ public class JModelTest {
 
 	@Test
 	public void testModel() {
-		JModel model = new JModel("bar.foo", "SomeClass");
-		JClass jClass = model.createRelativeClass("Suffix");
+		final JModel model = new JModel("bar.foo", "SomeClass");
+		final JClass jClass = model.createRelativeClass("Suffix");
 
 		assertNotNull(model.getCreatedTypes());
 		assertEquals(1, model.getCreatedTypes().size());

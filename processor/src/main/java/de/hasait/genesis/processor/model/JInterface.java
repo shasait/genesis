@@ -21,12 +21,12 @@ package de.hasait.genesis.processor.model;
  */
 public final class JInterface extends AbstractJType<JInterface> {
 
-	JInterface(JTypeUsage pType) {
+	JInterface(final JTypeUsage pType) {
 		super(pType);
 	}
 
 	@Override
-	protected void initField(JField pField) {
+	protected void initField(final JField pField) {
 		super.initField(pField);
 
 		pField.setVisibility(JVisibility.PUBLIC);

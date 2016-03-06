@@ -15,7 +15,9 @@
  */
 
 
- var Util = Java.type('de.hasait.genesis.processor.Util');
+var GenesisUtils = Java.type('de.hasait.genesis.processor.util.GenesisUtils');
+var StringUtils = Java.type('de.hasait.genesis.processor.deps.apache.commons.lang3.StringUtils');
+var IOUtils = Java.type('de.hasait.genesis.processor.deps.apache.commons.io.IOUtils');
 
 function genesis(generatorEnv) {
     var typeElement = generatorEnv.typeElement;
@@ -36,15 +38,15 @@ function genesis(generatorEnv) {
     var processedPropertyNames = new java.util.HashSet();
 
     for each (var subElement in typeElement.getEnclosedElements()) {
-        var propertyName = Util.determinePropertyNameFromAccessor(subElement);
+        var propertyName = GenesisUtils.determinePropertyNameFromAccessor(subElement);
         if (propertyName != null && !processedPropertyNames.contains(propertyName)) {
             processedPropertyNames.add(propertyName);
-            var propertyNameUU = Util.camelCaseToUpperUnderscore(propertyName);
+            var propertyNameUU = GenesisUtils.camelCaseToUpperUnderscore(propertyName);
 
             srcW.println();
             srcW.println("\tpublic static final String PROPERTY__" + propertyNameUU + "__NAME = \"" + propertyName + "\";");
 
-            var propertyType = Util.determinePropertyTypeFromAccessor(subElement);
+            var propertyType = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
             var propertyTypeJavaSrc = generatorEnv.typeMirrorToJavaSrc(propertyType);
             srcW.println("\tpublic static final Class<?> PROPERTY__" + propertyNameUU + "__TYPE = " + propertyTypeJavaSrc + ";");
         }
