@@ -23,7 +23,7 @@
 	<version>0.4.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Genesis Parent</name>
+	<name>parent</name>
 	<description>Genesis Parent</description>
 	<url>https://github.com/shasait/genesis/wiki</url>
 
