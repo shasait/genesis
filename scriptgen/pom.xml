@@ -20,29 +20,19 @@
 
 	<parent>
 		<groupId>de.hasait.genesis</groupId>
-		<artifactId>genesis-parent</artifactId>
+		<artifactId>genesis-procparent</artifactId>
 		<version>0.4.2-SNAPSHOT</version>
-		<relativePath>parent/pom.xml</relativePath>
+		<relativePath>../procparent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>aggregator</artifactId>
-	<packaging>pom</packaging>
+	<artifactId>genesis-scriptgen</artifactId>
+	<packaging>jar</packaging>
 
-	<name>aggregator</name>
-	<description>Genesis Aggregator</description>
+	<name>scriptgen</name>
+	<description>Annotation Processor for generating java code using scripts</description>
 
-	<scm>
-		<connection>scm:git:https://github.com/shasait/genesis.git</connection>
-		<developerConnection>scm:git:git@github.com:shasait/genesis.git</developerConnection>
-		<url>https://github.com/shasait/genesis</url>
-		<tag>HEAD</tag>
-	</scm>
+	<properties>
+		<genesis.shade.basepackage>de.hasait.genesis.scriptgen.deps</genesis.shade.basepackage>
+	</properties>
 
-	<modules>
-		<module>parent</module>
-		<module>base</module>
-		<module>procparent</module>
-		<module>scriptgen</module>
-		<module>metagen</module>
-	</modules>
 </project>
