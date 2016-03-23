@@ -17,7 +17,7 @@ Add the following dependency to your project:
 <dependency>
     <groupId>de.hasait.genesis</groupId>
     <artifactId>genesis-scriptgen</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -42,7 +42,7 @@ Add the following dependency to your project:
 <dependency>
     <groupId>de.hasait.genesis</groupId>
     <artifactId>genesis-metagen</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <scope>provided</scope>
 </dependency>
 ```
