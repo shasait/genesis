@@ -28,7 +28,7 @@ public final class JTypeUsage {
 
 	private final JTypeReference _type;
 
-	private final List<JTypeArgument> _arguments = new ArrayList<>();
+	private final List<JTypeArgument> _arguments = new ArrayList<JTypeArgument>();
 
 	public JTypeUsage(final JTypeReference pType, final JTypeArgument... pArguments) {
 		super();

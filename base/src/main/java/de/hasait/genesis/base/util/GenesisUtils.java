@@ -34,11 +34,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.type.TypeMirror;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.tools.Diagnostic;
 
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -110,18 +107,6 @@ public final class GenesisUtils {
 		}
 
 		return null;
-	}
-
-	public static ScriptEngine determineScriptEngine(final String pScriptFileExtension, final ClassLoader pClassLoader) {
-		final ScriptEngine engine;
-		final NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
-		if (nashornScriptEngineFactory.getExtensions().contains(pScriptFileExtension)) {
-			engine = nashornScriptEngineFactory.getScriptEngine(pClassLoader);
-		} else {
-			final ScriptEngineManager factory = new ScriptEngineManager();
-			engine = factory.getEngineByExtension(pScriptFileExtension);
-		}
-		return engine;
 	}
 
 	public static String extractPropertyNameFromAccessor(final String pAccessorName, final String pPrefix) {

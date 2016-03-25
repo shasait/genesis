@@ -30,10 +30,11 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import de.hasait.genesis.base.AbstractGenesisProcessor;
 import de.hasait.genesis.base.GeneratorEnv;
-import de.hasait.genesis.base.util.GenesisUtils;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.apache.commons.lang3.StringUtils;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -59,6 +60,18 @@ public class ScriptGenProcessor extends AbstractGenesisProcessor {
 		}
 
 		registerGenerator(ScriptGen.class, this::processScriptGen);
+	}
+
+	private ScriptEngine determineScriptEngine(final String pScriptFileExtension, final ClassLoader pClassLoader) {
+		final ScriptEngine engine;
+		final NashornScriptEngineFactory nashornScriptEngineFactory = new NashornScriptEngineFactory();
+		if (nashornScriptEngineFactory.getExtensions().contains(pScriptFileExtension)) {
+			engine = nashornScriptEngineFactory.getScriptEngine(pClassLoader);
+		} else {
+			final ScriptEngineManager factory = new ScriptEngineManager();
+			engine = factory.getEngineByExtension(pScriptFileExtension);
+		}
+		return engine;
 	}
 
 	private void processScriptGen(final ScriptGen pScriptGenAnnotation, final GeneratorEnv pGeneratorEnv) throws Exception {
@@ -92,7 +105,7 @@ public class ScriptGenProcessor extends AbstractGenesisProcessor {
 
 		final String scriptFileExtension = scriptResourcePath.substring(indexOfDot + 1);
 
-		final ScriptEngine engine = GenesisUtils.determineScriptEngine(scriptFileExtension, classLoader);
+		final ScriptEngine engine = determineScriptEngine(scriptFileExtension, classLoader);
 
 		if (engine == null) {
 			pGeneratorEnv.printError("Script extension \"%s\" unsupported", scriptFileExtension);

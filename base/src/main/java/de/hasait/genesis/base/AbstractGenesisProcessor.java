@@ -35,7 +35,7 @@ import de.hasait.genesis.base.util.GenesisUtils;
  */
 public class AbstractGenesisProcessor extends AbstractProcessor {
 
-	private final Map<String, Generator<?>> _generators = new HashMap<>();
+	private final Map<String, Generator<?>> _generators = new HashMap<String, Generator<?>>();
 
 	private ModelWriter _modelWriter;
 

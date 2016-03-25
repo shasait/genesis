@@ -18,7 +18,6 @@ package de.hasait.genesis.base.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import de.hasait.genesis.base.util.GenesisUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,9 +33,9 @@ public final class JPackage extends AbstractJNamed {
 
 	private final String _qualifiedName;
 
-	private final Map<String, JPackage> _childrenByName = new HashMap<>();
+	private final Map<String, JPackage> _childrenByName = new HashMap<String, JPackage>();
 
-	private final Map<String, JTypeReference> _typesByName = new HashMap<>();
+	private final Map<String, JTypeReference> _typesByName = new HashMap<String, JTypeReference>();
 
 	JPackage(final JPackage pParent, final String pName) {
 		super(pName);
@@ -63,15 +62,21 @@ public final class JPackage extends AbstractJNamed {
 	}
 
 	public JTypeReference createOfGetTypeReference(final String pQualifiedTypeName) {
-		return createOrGetChildObject(pQualifiedTypeName,
-									  (pParent, pName) -> _typesByName.computeIfAbsent(pName, pUnused -> new JTypeReference(pParent, pName))
-		);
+		return createOrGetChildObject(pQualifiedTypeName, _typesByName, new Creator<JTypeReference>() {
+			@Override
+			public JTypeReference create(final JPackage pParent, final String pName) {
+				return new JTypeReference(pParent, pName);
+			}
+		});
 	}
 
 	public JPackage createOrGetChildPackage(final String pQualifiedPackageName) {
-		return createOrGetChildObject(pQualifiedPackageName,
-									  (pParent, pName) -> _childrenByName.computeIfAbsent(pName, pUnused -> new JPackage(pParent, pName))
-		);
+		return createOrGetChildObject(pQualifiedPackageName, _childrenByName, new Creator<JPackage>() {
+			@Override
+			public JPackage create(final JPackage pParent, final String pName) {
+				return new JPackage(pParent, pName);
+			}
+		});
 	}
 
 	public JPackage getParent() {
@@ -86,17 +91,25 @@ public final class JPackage extends AbstractJNamed {
 		return _root;
 	}
 
-	private <T> T createOrGetChildObject(final String pQualifiedName, final BiFunction<JPackage, String, T> pCreator) {
+	private <T> T createOrGetChildObject(final String pQualifiedName, final Map<String, T> pMap, final Creator<T> pCreator) {
 		GenesisUtils.assertTrue(!StringUtils.isEmpty(pQualifiedName));
 
 		final String[] parts = pQualifiedName.split("\\.", 2);
 
 		if (parts.length == 2) {
-			final JPackage child = _childrenByName.computeIfAbsent(parts[0], pName -> new JPackage(this, pName));
-			return child.createOrGetChildObject(parts[1], pCreator);
+			final String packagePart = parts[0];
+			if (!_childrenByName.containsKey(packagePart)) {
+				_childrenByName.put(packagePart, new JPackage(this, packagePart));
+			}
+			final JPackage child = _childrenByName.get(packagePart);
+			return child.createOrGetChildObject(parts[1], pMap, pCreator);
 		} else {
-			return pCreator.apply(this, parts[0]);
+			return pCreator.create(this, parts[0]);
 		}
+	}
+
+	private interface Creator<T> {
+		T create(JPackage pParent, String pName);
 	}
 
 }

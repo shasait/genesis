@@ -18,7 +18,6 @@ package de.hasait.genesis.base;
 
 import java.lang.annotation.Annotation;
 
-@FunctionalInterface
 public interface Generator<A extends Annotation> {
 
 	void generate(A pAnnotation, GeneratorEnv pGeneratorEnv) throws Exception;

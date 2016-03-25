@@ -24,7 +24,7 @@ import java.util.List;
  */
 public final class JMethod extends AbstractJMethod {
 
-	private final List<AbstractJStatement> _statements = new ArrayList<>();
+	private final List<AbstractJStatement> _statements = new ArrayList<AbstractJStatement>();
 
 	JMethod(final JTypeUsage pType, final String pName) {
 		super(pType, pName);

@@ -27,6 +27,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import de.hasait.genesis.base.AbstractGenesisProcessor;
+import de.hasait.genesis.base.Generator;
 import de.hasait.genesis.base.GeneratorEnv;
 import de.hasait.genesis.base.model.JClass;
 import de.hasait.genesis.base.model.JCustomExpression;
@@ -38,7 +39,7 @@ import de.hasait.genesis.base.model.JTypeUsage;
 import de.hasait.genesis.base.model.JVisibility;
 import de.hasait.genesis.base.util.GenesisUtils;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class MetaGenProcessor extends AbstractGenesisProcessor {
 
 	public MetaGenProcessor() {
@@ -49,59 +50,61 @@ public class MetaGenProcessor extends AbstractGenesisProcessor {
 	public synchronized void init(final ProcessingEnvironment pProcessingEnv) {
 		super.init(pProcessingEnv);
 
-		registerGenerator(MetaGen.class, this::processMetaGen);
-	}
+		registerGenerator(MetaGen.class, new Generator<MetaGen>() {
+			@Override
+			public void generate(final MetaGen pAnnotation, final GeneratorEnv pGeneratorEnv) throws Exception {
+				final TypeElement typeElement = (TypeElement) pGeneratorEnv.getAnnotatedElement();
 
-	private void processMetaGen(final MetaGen pMetaGenAnnotation, final GeneratorEnv pGeneratorEnv) throws Exception {
-		final TypeElement typeElement = (TypeElement) pGeneratorEnv.getAnnotatedElement();
+				final JModel model = pGeneratorEnv.getModel();
 
-		final JModel model = pGeneratorEnv.getModel();
+				final JClass mdClass = pGeneratorEnv.createRelativeClass("_MD");
 
-		final JClass mdClass = pGeneratorEnv.createRelativeClass("_MD");
+				final JTypeReference javaLangStringTR = model.createOrGetTypeReference(String.class);
+				final JTypeUsage javaLangStringTU = javaLangStringTR.createUsage();
 
-		final JTypeReference javaLangStringTR = model.createOrGetTypeReference(String.class);
-		final JTypeUsage javaLangStringTU = javaLangStringTR.createUsage();
+				final JTypeReference javaLangClassTR = model.createOrGetTypeReference(Class.class);
+				final JTypeUsage javaLangClassAnyTU = javaLangClassTR.createUsage(JTypeArgument.createAny());
 
-		final JTypeReference javaLangClassTR = model.createOrGetTypeReference(Class.class);
-		final JTypeUsage javaLangClassAnyTU = javaLangClassTR.createUsage(JTypeArgument.createAny());
+				final JField sourceNameField = mdClass.addField(javaLangStringTU, "SOURCE__QUALIFIED_NAME");
+				sourceNameField.setVisibility(JVisibility.PUBLIC);
+				sourceNameField.setStatic(true);
+				sourceNameField.setFinal(true);
+				sourceNameField.setInitializer(new JCustomExpression("\"" + typeElement.getQualifiedName() + "\""));
 
-		final JField sourceNameField = mdClass.addField(javaLangStringTU, "SOURCE__QUALIFIED_NAME");
-		sourceNameField.setVisibility(JVisibility.PUBLIC);
-		sourceNameField.setStatic(true);
-		sourceNameField.setFinal(true);
-		sourceNameField.setInitializer(new JCustomExpression("\"" + typeElement.getQualifiedName() + "\""));
+				final String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(typeElement.asType());
 
-		final String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(typeElement.asType());
+				final JField sourceTypeField = mdClass.addField(javaLangClassAnyTU, "SOURCE__TYPE");
+				sourceTypeField.setVisibility(JVisibility.PUBLIC);
+				sourceTypeField.setStatic(true);
+				sourceTypeField.setFinal(true);
+				sourceTypeField.setInitializer(new JCustomExpression(sourceTypeJavaSrc));
 
-		final JField sourceTypeField = mdClass.addField(javaLangClassAnyTU, "SOURCE__TYPE");
-		sourceTypeField.setVisibility(JVisibility.PUBLIC);
-		sourceTypeField.setStatic(true);
-		sourceTypeField.setFinal(true);
-		sourceTypeField.setInitializer(new JCustomExpression(sourceTypeJavaSrc));
+				final Set<String> processedPropertyNames = new HashSet<String>();
 
-		final Set<String> processedPropertyNames = new HashSet<>();
+				for (final Element subElement : typeElement.getEnclosedElements()) {
+					final String propertyName = GenesisUtils.determinePropertyNameFromAccessor(subElement);
+					if (propertyName != null && !processedPropertyNames.contains(propertyName)) {
+						processedPropertyNames.add(propertyName);
+						final String propertyNameUU = GenesisUtils.camelCaseToUpperUnderscore(propertyName);
 
-		for (final Element subElement : typeElement.getEnclosedElements()) {
-			final String propertyName = GenesisUtils.determinePropertyNameFromAccessor(subElement);
-			if (propertyName != null && !processedPropertyNames.contains(propertyName)) {
-				processedPropertyNames.add(propertyName);
-				final String propertyNameUU = GenesisUtils.camelCaseToUpperUnderscore(propertyName);
+						final TypeMirror propertyTM = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
+						final String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(propertyTM);
 
-				final TypeMirror propertyTM = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
-				final String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(propertyTM);
+						final JField propertyNameField = mdClass.addField(javaLangStringTU, "PROPERTY__" + propertyNameUU + "__NAME");
+						propertyNameField.setVisibility(JVisibility.PUBLIC);
+						propertyNameField.setStatic(true);
+						propertyNameField.setFinal(true);
+						propertyNameField.setInitializer(new JCustomExpression("\"" + propertyName + "\""));
 
-				final JField propertyNameField = mdClass.addField(javaLangStringTU, "PROPERTY__" + propertyNameUU + "__NAME");
-				propertyNameField.setVisibility(JVisibility.PUBLIC);
-				propertyNameField.setStatic(true);
-				propertyNameField.setFinal(true);
-				propertyNameField.setInitializer(new JCustomExpression("\"" + propertyName + "\""));
-
-				final JField propertyTypeField = mdClass.addField(javaLangClassAnyTU, "PROPERTY__" + propertyNameUU + "__TYPE");
-				propertyTypeField.setVisibility(JVisibility.PUBLIC);
-				propertyTypeField.setStatic(true);
-				propertyTypeField.setFinal(true);
-				propertyTypeField.setInitializer(new JCustomExpression(propertyTypeJavaSrc));
+						final JField propertyTypeField = mdClass.addField(javaLangClassAnyTU, "PROPERTY__" + propertyNameUU + "__TYPE");
+						propertyTypeField.setVisibility(JVisibility.PUBLIC);
+						propertyTypeField.setStatic(true);
+						propertyTypeField.setFinal(true);
+						propertyTypeField.setInitializer(new JCustomExpression(propertyTypeJavaSrc));
+					}
+				}
 			}
-		}
+		});
 	}
+
 }

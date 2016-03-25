@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class AbstractJTypedElement extends AbstractJNamed {
 
 	private final JTypeUsage _type;
-	private final List<JAnnotation> _annotations = new ArrayList<>();
+	private final List<JAnnotation> _annotations = new ArrayList<JAnnotation>();
 	private boolean _final;
 
 	AbstractJTypedElement(final JTypeUsage pType, final String pName) {

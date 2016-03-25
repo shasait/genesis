@@ -32,7 +32,7 @@ public final class JModel {
 
 	private final JPackage _rootPackage = new JPackage();
 
-	private final Set<AbstractJType<?>> _createdTypes = new HashSet<>();
+	private final Set<AbstractJType<?>> _createdTypes = new HashSet<AbstractJType<?>>();
 
 	public JModel() {
 		super();

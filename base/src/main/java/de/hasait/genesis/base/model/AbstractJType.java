@@ -27,11 +27,11 @@ import de.hasait.genesis.base.util.GenesisUtils;
  */
 public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends AbstractJDeclaredTypedElement {
 
-	private final List<JField> _fields = new ArrayList<>();
-	private final List<AbstractJMethod> _methods = new ArrayList<>();
-	private final List<AbstractJType> _innerTypes = new ArrayList<>();
-	private final List<String> _customCodes = new ArrayList<>();
-	private final List<AbstractJPattern<IMPL>> _patterns = new ArrayList<>();
+	private final List<JField> _fields = new ArrayList<JField>();
+	private final List<AbstractJMethod> _methods = new ArrayList<AbstractJMethod>();
+	private final List<AbstractJType> _innerTypes = new ArrayList<AbstractJType>();
+	private final List<String> _customCodes = new ArrayList<String>();
+	private final List<AbstractJPattern<IMPL>> _patterns = new ArrayList<AbstractJPattern<IMPL>>();
 
 	AbstractJType(final JTypeUsage pType) {
 		super(pType, pType.getType().getName());

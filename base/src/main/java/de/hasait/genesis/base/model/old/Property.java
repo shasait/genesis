@@ -79,7 +79,7 @@ public class Property {
 	private final String _propertyFLUCAuto;
 	private final String _propertyFLUCSingle;
 	private final boolean _required;
-	private final List<String> _linesBeforeField = new ArrayList<>();
+	private final List<String> _linesBeforeField = new ArrayList<String>();
 	private boolean _fieldEnabled = true;
 	private boolean _accessorsEnabled = true;
 	private Property _otherRelationSide;

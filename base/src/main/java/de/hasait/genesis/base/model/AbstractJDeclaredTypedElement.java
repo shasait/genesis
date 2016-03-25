@@ -24,7 +24,7 @@ import java.util.List;
  */
 public abstract class AbstractJDeclaredTypedElement extends AbstractJTypedElement {
 
-	private final List<JComment> _comments = new ArrayList<>();
+	private final List<JComment> _comments = new ArrayList<JComment>();
 	private JVisibility _visibility = JVisibility.PRIVATE;
 	private boolean _static;
 

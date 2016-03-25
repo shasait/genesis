@@ -24,7 +24,7 @@ import java.util.List;
  */
 public abstract class AbstractJMethod extends AbstractJDeclaredTypedElement {
 
-	private final List<JMethodArgument> _arguments = new ArrayList<>();
+	private final List<JMethodArgument> _arguments = new ArrayList<JMethodArgument>();
 
 	AbstractJMethod(final JTypeUsage pType, final String pName) {
 		super(pType, pName);

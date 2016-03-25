@@ -28,6 +28,7 @@ import java.util.TreeSet;
 import de.hasait.genesis.base.GeneratorEnv;
 import de.hasait.genesis.base.util.GenesisUtils;
 import de.hasait.genesis.base.util.JavaContentBuffer;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,7 +40,7 @@ public class JavaType {
 	private static final String USER_DEFINED_CUSTOM_CODE = "### USER DEFINED CUSTOM CODE ###"; //$NON-NLS-1$
 
 	private static List<String> findUserDefinedCustomCodeBlocks(final File pFile) throws IOException {
-		final List<String> result = new ArrayList<>();
+		final List<String> result = new ArrayList<String>();
 
 		final String content = GenesisUtils.readFileToString(pFile);
 		if (content != null) {
@@ -71,11 +72,11 @@ public class JavaType {
 
 	private final String _packageName;
 	private final String _name;
-	private final Set<String> _imports = new TreeSet<>();
-	private final Set<String> _implements = new TreeSet<>();
-	private final List<Property> _properties = new ArrayList<>();
-	private final List<JavaContentBuffer> _constructors = new ArrayList<>();
-	private final List<JavaContentBuffer> _appends = new ArrayList<>();
+	private final Set<String> _imports = new TreeSet<String>();
+	private final Set<String> _implements = new TreeSet<String>();
+	private final List<Property> _properties = new ArrayList<Property>();
+	private final List<JavaContentBuffer> _constructors = new ArrayList<JavaContentBuffer>();
+	private final List<JavaContentBuffer> _appends = new ArrayList<JavaContentBuffer>();
 	private boolean _abstract;
 	private String _superName;
 	private JavaContentBuffer _linesBefore = null;
@@ -167,8 +168,11 @@ public class JavaType {
 
 	public void writeToGeneratorEnv(final GeneratorEnv pGeneratorEnv) throws Exception {
 		final String qualifiedName = StringUtils.isEmpty(_packageName) ? _name : _packageName + "." + _name;
-		try (PrintWriter pw = pGeneratorEnv.createJavaSrcFile(qualifiedName)) {
+		PrintWriter pw = pGeneratorEnv.createJavaSrcFile(qualifiedName);
+		try {
 			pw.print(createContent(null));
+		} finally {
+			IOUtils.closeQuietly(pw);
 		}
 	}
 

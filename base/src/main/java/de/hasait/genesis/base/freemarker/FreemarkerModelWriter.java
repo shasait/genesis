@@ -31,6 +31,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -68,8 +69,11 @@ public class FreemarkerModelWriter implements ModelWriter {
 		GenesisUtils.assertNotNull(pEnv);
 
 		for (final AbstractJType<?> jType : pModel.getCreatedTypes()) {
-			try (Writer writer = pEnv.createJavaSrcFile(jType.getType().getType().getQualifiedName())) {
+			final Writer writer = pEnv.createJavaSrcFile(jType.getType().getType().getQualifiedName());
+			try {
 				write(_configuration, writer, jType, null);
+			} finally {
+				IOUtils.closeQuietly(writer);
 			}
 		}
 	}
@@ -79,7 +83,7 @@ public class FreemarkerModelWriter implements ModelWriter {
 		private final Object _model;
 		private final Map _params;
 
-		public Context(final Object pModel, final Map pParams) {
+		private Context(final Object pModel, final Map pParams) {
 			_model = pModel;
 			_params = pParams;
 		}

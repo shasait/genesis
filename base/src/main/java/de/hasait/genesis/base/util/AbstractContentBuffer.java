@@ -26,7 +26,7 @@ public class AbstractContentBuffer<P extends ContentBuffer<?>> implements Conten
 	private static final String DEFAULT_DEFAULT_INDENT = "\t";
 	private static final String DEFAULT_NEWLINE = "\n";
 
-	private final LinkedList<String> _indents = new LinkedList<>();
+	private final LinkedList<String> _indents = new LinkedList<String>();
 
 	private String _newline;
 	private String _defaultIndent;
@@ -214,9 +214,11 @@ public class AbstractContentBuffer<P extends ContentBuffer<?>> implements Conten
 	}
 
 	protected final void updateIndent() {
-		final StringBuilder indent = new StringBuilder();
-		_indents.forEach(indent::append);
-		_indent = indent.toString();
+		final StringBuilder chainedIndents = new StringBuilder();
+		for (final String indent : _indents) {
+			chainedIndents.append(indent);
+		}
+		_indent = chainedIndents.toString();
 	}
 
 }
