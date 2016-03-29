@@ -17,9 +17,9 @@
 package de.hasait.genesis.base.model;
 
 /**
- * Generic type bound.
+ * Generic type bound. (2nd bound not supported yet)
  */
-public final class JTypeArgument {
+public final class JTypeArgument implements JSrcSupported {
 
 	public static JTypeArgument createAny() {
 		return new JTypeArgument(null, false, false);
@@ -47,16 +47,33 @@ public final class JTypeArgument {
 		_super = pSuper;
 	}
 
-	public final JTypeUsage getType() {
+	public JTypeUsage getType() {
 		return _type;
 	}
 
-	public final boolean isExtends() {
+	public boolean isExtends() {
 		return _extends;
 	}
 
-	public final boolean isSuper() {
+	public boolean isSuper() {
 		return _super;
+	}
+
+	public String toSrc() {
+		final StringBuilder sb = new StringBuilder();
+		if (_type == null || _extends || _super) {
+			sb.append("?");
+		}
+		if (_extends) {
+			sb.append(" extends ");
+		}
+		if (_super) {
+			sb.append(" super ");
+		}
+		if (_type != null) {
+			sb.append(_type.toSrc());
+		}
+		return sb.toString();
 	}
 
 }

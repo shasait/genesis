@@ -18,24 +18,31 @@ package de.hasait.genesis.base;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import javax.tools.JavaFileObject;
 
 import de.hasait.genesis.base.model.JClass;
 import de.hasait.genesis.base.model.JModel;
+import de.hasait.genesis.base.model.JTypeArgument;
+import de.hasait.genesis.base.model.JTypeReference;
+import de.hasait.genesis.base.model.JTypeUsage;
 import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *
  */
 public final class GeneratorEnv implements ModelWriterEnv {
-
-	private static final String JAVA_LANG_PACKAGE_PREFIX = "java.lang.";
 
 	private final ProcessingEnvironment _processingEnvironment;
 	private final Element _annotatedElement;
@@ -99,35 +106,95 @@ public final class GeneratorEnv implements ModelWriterEnv {
 		GenesisUtils.printStackTrace(_processingEnvironment.getMessager(), _annotatedElement, pThrowable, pFormat, pArgs);
 	}
 
-	public String typeMirrorToJavaSrc(final TypeMirror pTypeMirror) {
-		switch (pTypeMirror.getKind()) {
-			case BOOLEAN:
-				return "Boolean.TYPE";
-			case BYTE:
-				return "Byte.TYPE";
-			case SHORT:
-				return "Short.TYPE";
-			case INT:
-				return "Integer.TYPE";
-			case LONG:
-				return "Long.TYPE";
-			case FLOAT:
-				return "Float.TYPE";
-			case DOUBLE:
-				return "Double.TYPE";
-			case CHAR:
-				return "Character.TYPE";
+	@Nonnull
+	public JTypeUsage typeMirrorToJTypeUsage(@Nonnull final TypeMirror pTypeMirror) {
+		return typeMirrorToJTypeUsage(pTypeMirror, null);
+	}
+
+	@Nonnull
+	private JTypeArgument typeMirrorToJTypeArgument(@Nonnull final TypeMirror pTypeMirror) {
+		GenesisUtils.assertNotNull(pTypeMirror);
+
+		final TypeKind kind = pTypeMirror.getKind();
+
+		if (kind == TypeKind.WILDCARD) {
+			final WildcardType wildcardType = (WildcardType) pTypeMirror;
+			if (wildcardType.getExtendsBound() != null) {
+				return JTypeArgument.createExtends(typeMirrorToJTypeUsage(wildcardType.getExtendsBound()));
+			}
+			if (wildcardType.getSuperBound() != null) {
+				return JTypeArgument.createSuper(typeMirrorToJTypeUsage(wildcardType.getSuperBound()));
+			}
+			return JTypeArgument.createAny();
 		}
 
-		final TypeMirror erasuredType = _processingEnvironment.getTypeUtils().erasure(pTypeMirror);
+		return JTypeArgument.createExact(typeMirrorToJTypeUsage(pTypeMirror));
+	}
 
-		String typeString = erasuredType.toString();
+	@Nonnull
+	private JTypeReference typeMirrorToJTypeReference(@Nonnull final TypeMirror pTypeMirror) {
+		GenesisUtils.assertNotNull(pTypeMirror);
 
-		if (typeString.startsWith(JAVA_LANG_PACKAGE_PREFIX)) {
-			typeString = typeString.substring(JAVA_LANG_PACKAGE_PREFIX.length());
+		final TypeKind kind = pTypeMirror.getKind();
+
+		final JTypeReference typeReference;
+		if (kind.isPrimitive()) {
+			switch (kind) {
+				case BOOLEAN:
+					return JTypeReference.BOOLEAN;
+				case BYTE:
+					return JTypeReference.BYTE;
+				case SHORT:
+					return JTypeReference.SHORT;
+				case INT:
+					return JTypeReference.INT;
+				case LONG:
+					return JTypeReference.LONG;
+				case FLOAT:
+					return JTypeReference.FLOAT;
+				case DOUBLE:
+					return JTypeReference.DOUBLE;
+				case CHAR:
+					return JTypeReference.CHAR;
+			}
+		} else if (kind == TypeKind.DECLARED) {
+			final DeclaredType declaredType = (DeclaredType) pTypeMirror;
+			final TypeElement typeElement = (TypeElement) declaredType.asElement();
+			return _model.createOrGetTypeReference(typeElement.getQualifiedName().toString());
 		}
 
-		return typeString + ".class";
+		throw new RuntimeException("Unsupported TypeMirror kind: " + kind);
+	}
+
+	@Nonnull
+	private JTypeUsage typeMirrorToJTypeUsage(@Nonnull final TypeMirror pTypeMirror, final List<Integer> pArrayDimensions) {
+		GenesisUtils.assertNotNull(pTypeMirror);
+
+		final TypeKind kind = pTypeMirror.getKind();
+
+		if (kind == TypeKind.ARRAY) {
+			final ArrayType arrayType = (ArrayType) pTypeMirror;
+			final List<Integer> arrayDimensions = pArrayDimensions != null ? pArrayDimensions : new ArrayList<Integer>();
+			arrayDimensions.add(null);
+			return typeMirrorToJTypeUsage(arrayType.getComponentType(), arrayDimensions);
+		}
+
+		final JTypeReference typeReference = typeMirrorToJTypeReference(pTypeMirror);
+		final JTypeUsage typeUsage = new JTypeUsage(typeReference);
+		if (pArrayDimensions != null) {
+			for (final Integer dimension : pArrayDimensions) {
+				typeUsage.addArrayDimension(dimension);
+			}
+		}
+
+		if (kind == TypeKind.DECLARED) {
+			final DeclaredType declaredType = (DeclaredType) pTypeMirror;
+			for (final TypeMirror argument : declaredType.getTypeArguments()) {
+				typeUsage.addArgument(typeMirrorToJTypeArgument(argument));
+			}
+		}
+
+		return typeUsage;
 	}
 
 }

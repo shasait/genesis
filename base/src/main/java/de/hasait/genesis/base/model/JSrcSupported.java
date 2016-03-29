@@ -16,28 +16,8 @@
 
 package de.hasait.genesis.base.model;
 
-/**
- *
- */
-public final class JCustomStatement extends AbstractJStatement implements JSrcSupported {
+public interface JSrcSupported {
 
-	private String _customCode;
-
-	JCustomStatement() {
-		super();
-	}
-
-	public final String getCustomCode() {
-		return _customCode;
-	}
-
-	public final void setCustomCode(final String pCustomCode) {
-		_customCode = pCustomCode;
-	}
-
-	@Override
-	public String toSrc() {
-		return _customCode;
-	}
+	String toSrc();
 
 }

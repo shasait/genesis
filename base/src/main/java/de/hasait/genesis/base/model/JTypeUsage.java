@@ -17,42 +17,94 @@
 package de.hasait.genesis.base.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  * Usage of a type with optional generic arguments.
  */
-public final class JTypeUsage {
+public final class JTypeUsage implements JSrcSupported {
 
 	private final JTypeReference _type;
 
 	private final List<JTypeArgument> _arguments = new ArrayList<JTypeArgument>();
 
-	public JTypeUsage(final JTypeReference pType, final JTypeArgument... pArguments) {
+	private final List<Integer> _arrayDimensions = new ArrayList<Integer>();
+
+	public JTypeUsage(@Nonnull final JTypeReference pType, final JTypeArgument... pArguments) {
+		this(pType, Arrays.asList(pArguments), null);
+	}
+
+	public JTypeUsage(@Nonnull final JTypeReference pType, @Nullable final List<JTypeArgument> pArguments, @Nullable final List<Integer> pArrayDimensions) {
 		super();
 		GenesisUtils.assertNotNull(pType);
 
 		_type = pType;
 
-		for (final JTypeArgument argument : pArguments) {
-			addArgument(argument);
+		if (pArguments != null) {
+			for (final JTypeArgument argument : pArguments) {
+				addArgument(argument);
+			}
+		}
+		if (pArrayDimensions != null) {
+			for (final Integer dimension : pArrayDimensions) {
+				addArrayDimension(dimension);
+			}
 		}
 	}
 
-	public void addArgument(final JTypeArgument pArgument) {
+	public void addArgument(@Nonnull final JTypeArgument pArgument) {
 		GenesisUtils.assertNotNull(pArgument);
 
 		_arguments.add(pArgument);
+	}
+
+	public void addArrayDimension(@Nullable final Integer pDimension) {
+		_arrayDimensions.add(pDimension);
+	}
+
+	public JTypeUsage erasure() {
+		return _arguments.isEmpty() ? this : new JTypeUsage(_type, null, _arrayDimensions);
 	}
 
 	public JTypeReference getType() {
 		return _type;
 	}
 
+	public String toSrc() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(_type.toSrc());
+		if (!_arguments.isEmpty()) {
+			sb.append('<');
+			boolean first = true;
+			for (final JTypeArgument argument : _arguments) {
+				if (first) {
+					first = false;
+				} else {
+					sb.append(", ");
+				}
+				sb.append(argument.toSrc());
+			}
+			sb.append('>');
+		}
+		for (final Integer dimension : _arrayDimensions) {
+			sb.append('[');
+			if (dimension != null) {
+				sb.append(dimension);
+			}
+			sb.append(']');
+		}
+		return sb.toString();
+	}
+
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + _type + "<" + _arguments + ">" + "]";
+		return getClass().getSimpleName() + "[" + _type + "<" + _arguments + ">" + _arrayDimensions + "]";
 	}
+
 }

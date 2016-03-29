@@ -71,7 +71,7 @@ public class MetaGenProcessor extends AbstractGenesisProcessor {
 				sourceNameField.setFinal(true);
 				sourceNameField.setInitializer(new JCustomExpression("\"" + typeElement.getQualifiedName() + "\""));
 
-				final String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(typeElement.asType());
+				final String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJTypeUsage(typeElement.asType()).erasure().toSrc() + ".class";
 
 				final JField sourceTypeField = mdClass.addField(javaLangClassAnyTU, "SOURCE__TYPE");
 				sourceTypeField.setVisibility(JVisibility.PUBLIC);
@@ -88,7 +88,7 @@ public class MetaGenProcessor extends AbstractGenesisProcessor {
 						final String propertyNameUU = GenesisUtils.camelCaseToUpperUnderscore(propertyName);
 
 						final TypeMirror propertyTM = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
-						final String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJavaSrc(propertyTM);
+						final String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJTypeUsage(propertyTM).erasure().toSrc() + ".class";
 
 						final JField propertyNameField = mdClass.addField(javaLangStringTU, "PROPERTY__" + propertyNameUU + "__NAME");
 						propertyNameField.setVisibility(JVisibility.PUBLIC);

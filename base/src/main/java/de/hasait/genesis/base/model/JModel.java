@@ -53,6 +53,10 @@ public final class JModel {
 	public JTypeReference createOrGetTypeReference(final @Nonnull Class<?> pClass) {
 		GenesisUtils.assertNotNull(pClass);
 
+		if (pClass.isPrimitive()) {
+			return JTypeReference.PRIMITIVE_TYPES.get(pClass);
+		}
+
 		return createOrGetTypeReference(pClass.getName());
 	}
 

@@ -16,12 +16,16 @@
 
 package de.hasait.genesis.base.model;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  * Reference to a type.
  */
-public final class JTypeReference extends AbstractJNamed {
+public final class JTypeReference extends AbstractJNamed implements JSrcSupported {
 
 	public static final JTypeReference VOID = new JTypeReference("void", false, true);
 	public static final JTypeReference BOOLEAN = new JTypeReference("boolean", true, false);
@@ -32,6 +36,24 @@ public final class JTypeReference extends AbstractJNamed {
 	public static final JTypeReference FLOAT = new JTypeReference("float", true, false);
 	public static final JTypeReference DOUBLE = new JTypeReference("double", true, false);
 	public static final JTypeReference CHAR = new JTypeReference("char", true, false);
+
+	public static final Map<Class<?>, JTypeReference> PRIMITIVE_TYPES;
+
+	private static final String JAVA_LANG_PACKAGE = "java.lang";
+
+	static {
+		final Map<Class<?>, JTypeReference> map = new HashMap<Class<?>, JTypeReference>();
+		map.put(void.class, VOID);
+		map.put(boolean.class, BOOLEAN);
+		map.put(byte.class, BYTE);
+		map.put(short.class, SHORT);
+		map.put(int.class, INT);
+		map.put(long.class, LONG);
+		map.put(float.class, FLOAT);
+		map.put(double.class, DOUBLE);
+		map.put(char.class, CHAR);
+		PRIMITIVE_TYPES = Collections.unmodifiableMap(map);
+	}
 
 	private final JPackage _package;
 
@@ -84,6 +106,13 @@ public final class JTypeReference extends AbstractJNamed {
 
 	public boolean isVoid() {
 		return _void;
+	}
+
+	public String toSrc() {
+		if (_package != null && JAVA_LANG_PACKAGE.equals(_package.getQualifiedName())) {
+			return getName();
+		}
+		return getQualifiedName();
 	}
 
 	@Override

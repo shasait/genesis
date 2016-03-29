@@ -19,7 +19,7 @@ package de.hasait.genesis.base.model;
 /**
  *
  */
-public final class JCustomExpression extends AbstractJExpression {
+public final class JCustomExpression extends AbstractJExpression implements JSrcSupported {
 
 	private String _customCode;
 
@@ -39,6 +39,11 @@ public final class JCustomExpression extends AbstractJExpression {
 
 	public final void setCustomCode(final String pCustomCode) {
 		_customCode = pCustomCode;
+	}
+
+	@Override
+	public String toSrc() {
+		return _customCode;
 	}
 
 }

@@ -14,4 +14,4 @@
  # limitations under the License.
 -->
 
-<#if model.final> final</#if> <#if ! params.replaceType??>${model.type.type.qualifiedName}<#else>${params.replaceType}</#if> ${model.name}
+<#if model.final> final</#if> <#if ! params.replaceType??>${model.type.toSrc()}<#else>${params.replaceType}</#if> ${model.name}
