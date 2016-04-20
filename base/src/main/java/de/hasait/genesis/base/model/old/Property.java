@@ -153,7 +153,8 @@ public class Property {
 		final String fullType = determineFullType(_multiplicity, _type);
 		final String parameterName = "p" + _propertyFLUCSingle; //$NON-NLS-1$
 
-		cb.a(JavaContentBuffer.TOKEN_PUBLIC).aSPACE().a(fullType).aSPACE().a("get").a(_propertyFLUCAuto) //$NON-NLS-1$
+		String getterPrefix = "boolean".equals(fullType) ? "is" : "get";
+		cb.a(JavaContentBuffer.TOKEN_PUBLIC).aSPACE().a(fullType).aSPACE().a(getterPrefix).a(_propertyFLUCAuto) //$NON-NLS-1$
 		  .a("(").a(")").aSPACE().blockStart(); //$NON-NLS-1$ //$NON-NLS-2$
 		cb.a("return").aSPACE().a(_fieldName).pSC(); //$NON-NLS-1$
 		cb.blockEnd();
