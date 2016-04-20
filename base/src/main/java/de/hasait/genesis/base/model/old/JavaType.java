@@ -122,6 +122,14 @@ public class JavaType {
 		return Collections.unmodifiableSet(_imports);
 	}
 
+	public String getName() {
+		return _name;
+	}
+
+	public String getPackageName() {
+		return _packageName;
+	}
+
 	public List<Property> getProperties() {
 		return Collections.unmodifiableList(_properties);
 	}
