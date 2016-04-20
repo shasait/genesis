@@ -26,8 +26,6 @@ import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.SupportedOptions;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -37,7 +35,6 @@ import de.hasait.genesis.base.GeneratorEnv;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.apache.commons.lang3.StringUtils;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions({
 		ScriptGenProcessor.OPTION___LOCATIONS
 })

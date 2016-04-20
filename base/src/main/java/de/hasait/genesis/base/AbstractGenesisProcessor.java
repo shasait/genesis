@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
@@ -39,25 +40,38 @@ public class AbstractGenesisProcessor extends AbstractProcessor {
 
 	private ModelWriter _modelWriter;
 
+	private boolean _skipLastProcessingRound;
+	private boolean _claimAnnotations;
+
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		return _generators.keySet();
 	}
 
 	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
+
+	@Override
 	public synchronized void init(final ProcessingEnvironment pProcessingEnv) {
 		super.init(pProcessingEnv);
 
+		// set some defaults
 		setModelWriter(new FreemarkerModelWriter());
+		_skipLastProcessingRound = true;
+		_claimAnnotations = false;
 	}
 
 	@Override
 	public final boolean process(final Set<? extends TypeElement> pAnnotationTypeElements, final RoundEnvironment pRoundEnv) {
-		for (final TypeElement annotationTypeElement : pAnnotationTypeElements) {
-			process(annotationTypeElement, pRoundEnv);
+		if (!pRoundEnv.processingOver() || !_skipLastProcessingRound) {
+			for (final TypeElement annotationTypeElement : pAnnotationTypeElements) {
+				process(annotationTypeElement, pRoundEnv);
+			}
 		}
 
-		return true;
+		return _claimAnnotations;
 	}
 
 	protected final Generator<?> getGenerator(final String pQualifiedAnnotationName) {
@@ -84,8 +98,16 @@ public class AbstractGenesisProcessor extends AbstractProcessor {
 		_generators.put(pAnnotationType.getName(), pGenerator);
 	}
 
+	protected final void setClaimAnnotations(final boolean pClaimAnnotations) {
+		_claimAnnotations = pClaimAnnotations;
+	}
+
 	protected final void setModelWriter(final ModelWriter pModelWriter) {
 		_modelWriter = pModelWriter;
+	}
+
+	protected final void setSkipLastProcessingRound(final boolean pSkipLastProcessingRound) {
+		_skipLastProcessingRound = pSkipLastProcessingRound;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,7 +136,7 @@ public class AbstractGenesisProcessor extends AbstractProcessor {
 				printNote(annotatedElement, "Processing: %s, %s", annotatedElement, pAnnotationTypeElement);
 
 				try {
-					final GeneratorEnv generatorEnv = new GeneratorEnv(processingEnv, annotatedElement);
+					final GeneratorEnv generatorEnv = new GeneratorEnv(processingEnv, pRoundEnv, annotatedElement);
 					final A annotation = annotatedElement.getAnnotation(annotationType);
 					generator.generate(annotation, generatorEnv);
 					getModelWriter().write(generatorEnv.getModel(), generatorEnv);

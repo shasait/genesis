@@ -20,8 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -39,7 +37,6 @@ import de.hasait.genesis.base.model.JTypeUsage;
 import de.hasait.genesis.base.model.JVisibility;
 import de.hasait.genesis.base.util.GenesisUtils;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class MetaGenProcessor extends AbstractGenesisProcessor {
 
 	public MetaGenProcessor() {

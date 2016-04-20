@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -45,13 +46,15 @@ import de.hasait.genesis.base.util.GenesisUtils;
 public final class GeneratorEnv implements ModelWriterEnv {
 
 	private final ProcessingEnvironment _processingEnvironment;
+	private final RoundEnvironment _roundEnvironment;
 	private final Element _annotatedElement;
 	private final JModel _model;
 
-	GeneratorEnv(final ProcessingEnvironment pProcessingEnvironment, final Element pAnnotatedElement) {
+	GeneratorEnv(final ProcessingEnvironment pProcessingEnvironment, final RoundEnvironment pRoundEnvironment, final Element pAnnotatedElement) {
 		super();
 
 		_processingEnvironment = pProcessingEnvironment;
+		_roundEnvironment = pRoundEnvironment;
 		_annotatedElement = pAnnotatedElement;
 
 		_model = new JModel();
@@ -92,6 +95,20 @@ public final class GeneratorEnv implements ModelWriterEnv {
 
 	public JModel getModel() {
 		return _model;
+	}
+
+	/**
+	 * @see RoundEnvironment#errorRaised()
+	 */
+	public boolean isErrorRaised() {
+		return _roundEnvironment.errorRaised();
+	}
+
+	/**
+	 * @see RoundEnvironment#processingOver()
+	 */
+	public boolean isProcessingOver() {
+		return _roundEnvironment.processingOver();
 	}
 
 	public void printError(final String pFormat, final Object... pArgs) {
