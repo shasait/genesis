@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -27,11 +28,39 @@
 	<artifactId>genesis-procparent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>procparent</name>
-	<description>Genesis Annotation Processor Parent</description>
+	<name>Genesis Annotation Processor Parent</name>
+	<description>Genesis Parent for Annotation Processors</description>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.gmaven</groupId>
+				<artifactId>groovy-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<source>
+								String sgroupid = project.groupId.toLowerCase().replaceAll('[^a-z0-9.]', '')
+								String sartifactid = project.artifactId.toLowerCase().replaceAll('[^a-z0-9]', '')
+								int maxI = 0;
+								for (int i = 1; i &lt; sartifactid.length() - 1; i++) {
+									if (sgroupid.endsWith(sartifactid.substring(0, i))) {
+										maxI = i
+									}
+								}
+								if (maxI &gt; 0) {
+									sartifactid = sartifactid.substring(maxI);
+								}
+								project.properties.put('project.shade.deps.package.name', sgroupid + '.' + sartifactid + '.shaded')
+							</source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -47,15 +76,15 @@
 							<relocations>
 								<relocation>
 									<pattern>freemarker</pattern>
-									<shadedPattern>${project.groupId}.${project.name}.deps.freemarker</shadedPattern>
+									<shadedPattern>${project.shade.deps.package.name}.freemarker</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.apache.commons</pattern>
-									<shadedPattern>${project.groupId}.${project.name}.deps.apache.commons</shadedPattern>
+									<shadedPattern>${project.shade.deps.package.name}.apache.commons</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>de.hasait.genesis.base</pattern>
-									<shadedPattern>${project.groupId}.${project.name}.deps.genesis.base</shadedPattern>
+									<shadedPattern>${project.shade.deps.package.name}.genesis.base</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

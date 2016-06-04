@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -27,8 +28,8 @@
 	<artifactId>aggregator</artifactId>
 	<packaging>pom</packaging>
 
-	<name>aggregator</name>
-	<description>Genesis Aggregator</description>
+	<name>Genesis Aggregator</name>
+	<description>Genesis Aggregator (It cannot dance, it cannot sing, but it generates serious code!)</description>
 
 	<scm>
 		<connection>scm:git:https://github.com/shasait/genesis.git</connection>

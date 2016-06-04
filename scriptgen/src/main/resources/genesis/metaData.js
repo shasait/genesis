@@ -15,9 +15,9 @@
  */
 
 
-var GenesisUtils = Java.type('de.hasait.genesis.scriptgen.deps.genesis.base.util.GenesisUtils');
-var StringUtils = Java.type('de.hasait.genesis.scriptgen.deps.apache.commons.lang3.StringUtils');
-var IOUtils = Java.type('de.hasait.genesis.scriptgen.deps.apache.commons.io.IOUtils');
+var GenesisUtils = Java.type('de.hasait.genesis.scriptgen.shaded.genesis.base.util.GenesisUtils');
+var StringUtils = Java.type('de.hasait.genesis.scriptgen.shaded.apache.commons.lang3.StringUtils');
+var IOUtils = Java.type('de.hasait.genesis.scriptgen.shaded.apache.commons.io.IOUtils');
 
 function generate(scriptEnv) {
     var generatorEnv = scriptEnv.generatorEnv;
