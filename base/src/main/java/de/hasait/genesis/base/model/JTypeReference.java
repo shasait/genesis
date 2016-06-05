@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
@@ -56,16 +58,12 @@ public final class JTypeReference extends AbstractJNamed implements JSrcSupporte
 	}
 
 	private final JPackage _package;
-
 	private final boolean _primitive;
-
 	private final boolean _void;
-
 	private final String _qualifiedName;
-
 	private AbstractJType _type;
 
-	JTypeReference(final JPackage pPackage, final String pName) {
+	JTypeReference(final @Nonnull JPackage pPackage, final String pName) {
 		super(pName);
 		GenesisUtils.assertNotNull(pPackage);
 
@@ -88,16 +86,22 @@ public final class JTypeReference extends AbstractJNamed implements JSrcSupporte
 		return new JTypeUsage(this, pArguments);
 	}
 
+	@Nonnull
 	public JPackage getPackage() {
 		return _package;
 	}
 
+	@Nonnull
 	public String getQualifiedName() {
 		return _qualifiedName;
 	}
 
 	public AbstractJType getType() {
 		return _type;
+	}
+
+	public boolean isJavaLang() {
+		return _package != null && JAVA_LANG_PACKAGE.equals(_package.getQualifiedName());
 	}
 
 	public boolean isPrimitive() {
@@ -108,8 +112,12 @@ public final class JTypeReference extends AbstractJNamed implements JSrcSupporte
 		return _void;
 	}
 
-	public String toSrc() {
-		if (_package != null && JAVA_LANG_PACKAGE.equals(_package.getQualifiedName())) {
+	public String toSrc(final SrcContext pContext) {
+		return toSrc(pContext, false);
+	}
+
+	public String toSrc(final SrcContext pContext, boolean pIgnoreImports) {
+		if (isJavaLang() || (!pIgnoreImports && pContext.getType().containsImport(this))) {
 			return getName();
 		}
 		return getQualifiedName();

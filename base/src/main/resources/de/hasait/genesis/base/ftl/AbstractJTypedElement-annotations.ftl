@@ -14,4 +14,10 @@
  # limitations under the License.
 -->
 
-${model.customCode}
+<#list model.annotations as annotation>
+    @${annotation.type.toSrc(srcContext)}<#list annotation.argAssignments> (
+        <#items as argAssignment>${argAssignment.targetName} = <@delegate model=argAssignment.sourceExpression /><#sep>,</#sep>
+        </#items>
+        )
+    </#list>
+</#list>

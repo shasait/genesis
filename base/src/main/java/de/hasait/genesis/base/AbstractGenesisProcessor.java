@@ -136,7 +136,7 @@ public class AbstractGenesisProcessor extends AbstractProcessor {
 				printNote(annotatedElement, "Processing: %s, %s", annotatedElement, pAnnotationTypeElement);
 
 				try {
-					final GeneratorEnv generatorEnv = new GeneratorEnv(processingEnv, pRoundEnv, annotatedElement);
+					final GeneratorEnv generatorEnv = new GeneratorEnv(this.getClass(), processingEnv, pRoundEnv, annotatedElement);
 					final A annotation = annotatedElement.getAnnotation(annotationType);
 					generator.generate(annotation, generatorEnv);
 					getModelWriter().write(generatorEnv.getModel(), generatorEnv);

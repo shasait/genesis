@@ -16,12 +16,12 @@
 
 package de.hasait.genesis.scriptgen.model;
 
-import de.hasait.genesis.base.model.JClass;
-import de.hasait.genesis.base.model.JModel;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+
+import de.hasait.genesis.base.model.JClass;
+import de.hasait.genesis.base.model.JModel;
 
 /**
  *
@@ -30,7 +30,7 @@ public class JModelTest {
 
 	@Test
 	public void testModel() {
-		final JModel model = new JModel();
+		final JModel model = new JModel(getClass());
 		final String qualifiedClassName = "foo.bar.Suffix";
 		final JClass jClass = model.createClass(qualifiedClassName);
 
@@ -40,5 +40,6 @@ public class JModelTest {
 
 		assertEquals(qualifiedClassName, jClass.getType().getType().getQualifiedName());
 	}
+
 
 }

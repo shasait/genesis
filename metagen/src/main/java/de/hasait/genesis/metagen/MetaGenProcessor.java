@@ -27,10 +27,11 @@ import javax.lang.model.type.TypeMirror;
 import de.hasait.genesis.base.AbstractGenesisProcessor;
 import de.hasait.genesis.base.Generator;
 import de.hasait.genesis.base.GeneratorEnv;
+import de.hasait.genesis.base.model.AbstractJExpression;
 import de.hasait.genesis.base.model.JClass;
-import de.hasait.genesis.base.model.JCustomExpression;
 import de.hasait.genesis.base.model.JField;
 import de.hasait.genesis.base.model.JModel;
+import de.hasait.genesis.base.model.JSrcExpression;
 import de.hasait.genesis.base.model.JTypeArgument;
 import de.hasait.genesis.base.model.JTypeReference;
 import de.hasait.genesis.base.model.JTypeUsage;
@@ -66,15 +67,16 @@ public class MetaGenProcessor extends AbstractGenesisProcessor {
 				sourceNameField.setVisibility(JVisibility.PUBLIC);
 				sourceNameField.setStatic(true);
 				sourceNameField.setFinal(true);
-				sourceNameField.setInitializer(new JCustomExpression("\"" + typeElement.getQualifiedName() + "\""));
+				sourceNameField.setInitializer(JSrcExpression.customCode("\"" + typeElement.getQualifiedName() + "\""));
 
-				final String sourceTypeJavaSrc = pGeneratorEnv.typeMirrorToJTypeUsage(typeElement.asType()).erasure().toSrc() + ".class";
+				final AbstractJExpression sourceTypeExpression = JSrcExpression
+						.classValue(pGeneratorEnv.typeMirrorToJTypeUsage(typeElement.asType()).erasure());
 
 				final JField sourceTypeField = mdClass.addField(javaLangClassAnyTU, "SOURCE__TYPE");
 				sourceTypeField.setVisibility(JVisibility.PUBLIC);
 				sourceTypeField.setStatic(true);
 				sourceTypeField.setFinal(true);
-				sourceTypeField.setInitializer(new JCustomExpression(sourceTypeJavaSrc));
+				sourceTypeField.setInitializer(sourceTypeExpression);
 
 				final Set<String> processedPropertyNames = new HashSet<String>();
 
@@ -85,19 +87,20 @@ public class MetaGenProcessor extends AbstractGenesisProcessor {
 						final String propertyNameUU = GenesisUtils.camelCaseToUpperUnderscore(propertyName);
 
 						final TypeMirror propertyTM = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
-						final String propertyTypeJavaSrc = pGeneratorEnv.typeMirrorToJTypeUsage(propertyTM).erasure().toSrc() + ".class";
+						final AbstractJExpression propertyTypeExpression = JSrcExpression
+								.classValue(pGeneratorEnv.typeMirrorToJTypeUsage(propertyTM).erasure());
 
 						final JField propertyNameField = mdClass.addField(javaLangStringTU, "PROPERTY__" + propertyNameUU + "__NAME");
 						propertyNameField.setVisibility(JVisibility.PUBLIC);
 						propertyNameField.setStatic(true);
 						propertyNameField.setFinal(true);
-						propertyNameField.setInitializer(new JCustomExpression("\"" + propertyName + "\""));
+						propertyNameField.setInitializer(JSrcExpression.customCode("\"" + propertyName + "\""));
 
 						final JField propertyTypeField = mdClass.addField(javaLangClassAnyTU, "PROPERTY__" + propertyNameUU + "__TYPE");
 						propertyTypeField.setVisibility(JVisibility.PUBLIC);
 						propertyTypeField.setStatic(true);
 						propertyTypeField.setFinal(true);
-						propertyTypeField.setInitializer(new JCustomExpression(propertyTypeJavaSrc));
+						propertyTypeField.setInitializer(propertyTypeExpression);
 					}
 				}
 			}

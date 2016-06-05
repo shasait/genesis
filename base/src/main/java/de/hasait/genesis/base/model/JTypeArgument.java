@@ -16,39 +16,63 @@
 
 package de.hasait.genesis.base.model;
 
+import javax.annotation.Nullable;
+
 /**
  * Generic type bound. (2nd bound not supported yet)
  */
 public final class JTypeArgument implements JSrcSupported {
 
 	public static JTypeArgument createAny() {
-		return new JTypeArgument(null, false, false);
+		return new JTypeArgument(null, null, false, false);
 	}
 
 	public static JTypeArgument createExact(final JTypeUsage pType) {
-		return new JTypeArgument(pType, false, false);
+		return new JTypeArgument(null, pType, false, false);
 	}
 
 	public static JTypeArgument createExtends(final JTypeUsage pType) {
-		return new JTypeArgument(pType, true, false);
+		return new JTypeArgument(null, pType, true, false);
 	}
 
 	public static JTypeArgument createSuper(final JTypeUsage pType) {
-		return new JTypeArgument(pType, false, true);
+		return new JTypeArgument(null, pType, false, true);
 	}
 
+	public static JTypeArgument createVar(final String pVarName) {
+		return new JTypeArgument(pVarName, null, false, false);
+	}
+
+	public static JTypeArgument createVarExtends(final String pVarName, final JTypeUsage pType) {
+		return new JTypeArgument(pVarName, pType, true, false);
+	}
+
+	public static JTypeArgument createVarSuper(final String pVarName, final JTypeUsage pType) {
+		return new JTypeArgument(pVarName, pType, false, true);
+	}
+
+	private final String _varName;
 	private final JTypeUsage _type;
 	private final boolean _extends;
 	private final boolean _super;
 
-	private JTypeArgument(final JTypeUsage pType, final boolean pExtends, final boolean pSuper) {
+	private JTypeArgument(final String pVarName, final JTypeUsage pType, final boolean pExtends, final boolean pSuper) {
+		super();
+
+		_varName = pVarName;
 		_type = pType;
 		_extends = pExtends;
 		_super = pSuper;
 	}
 
+	@Nullable
 	public JTypeUsage getType() {
 		return _type;
+	}
+
+	@Nullable
+	public String getVarName() {
+		return _varName;
 	}
 
 	public boolean isExtends() {
@@ -59,10 +83,10 @@ public final class JTypeArgument implements JSrcSupported {
 		return _super;
 	}
 
-	public String toSrc() {
+	public String toSrc(final SrcContext pContext) {
 		final StringBuilder sb = new StringBuilder();
 		if (_type == null || _extends || _super) {
-			sb.append("?");
+			sb.append(_varName == null ? "?" : _varName);
 		}
 		if (_extends) {
 			sb.append(" extends ");
@@ -71,7 +95,7 @@ public final class JTypeArgument implements JSrcSupported {
 			sb.append(" super ");
 		}
 		if (_type != null) {
-			sb.append(_type.toSrc());
+			sb.append(_type.toSrc(pContext));
 		}
 		return sb.toString();
 	}

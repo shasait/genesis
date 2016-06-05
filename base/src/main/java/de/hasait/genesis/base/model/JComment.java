@@ -16,6 +16,8 @@
 
 package de.hasait.genesis.base.model;
 
+import javax.annotation.Nonnull;
+
 import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
@@ -24,10 +26,9 @@ import de.hasait.genesis.base.util.GenesisUtils;
 public final class JComment {
 
 	private final JCommentType _type;
-
 	private String _text;
 
-	JComment(final JCommentType pType) {
+	JComment(final @Nonnull JCommentType pType) {
 		super();
 		GenesisUtils.assertNotNull(pType);
 
@@ -36,6 +37,11 @@ public final class JComment {
 
 	public String getText() {
 		return _text;
+	}
+
+	@Nonnull
+	public JCommentType getType() {
+		return _type;
 	}
 
 	public void setText(final String pText) {

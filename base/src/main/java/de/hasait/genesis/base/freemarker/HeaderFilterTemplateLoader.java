@@ -21,10 +21,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.regex.Pattern;
 
-import de.hasait.genesis.base.util.GenesisUtils;
 import freemarker.cache.TemplateLoader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  * Filter header and empty lines after it.

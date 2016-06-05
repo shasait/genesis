@@ -14,4 +14,5 @@
  # limitations under the License.
 -->
 
+<@delegate model=model template="AbstractJTypedElement-annotations.ftl" />
 <@delegate model=model template="AbstractJDeclaredTypedElement.ftl" /><#if model.initializer??> = <@delegate model=model.initializer /></#if>;

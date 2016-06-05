@@ -16,6 +16,8 @@
 
 package de.hasait.genesis.base.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  */
@@ -36,8 +38,8 @@ public final class JCustomStatement extends AbstractJStatement implements JSrcSu
 	}
 
 	@Override
-	public String toSrc() {
-		return _customCode;
+	public String toSrc(final SrcContext pContext) {
+		return StringUtils.defaultString(_customCode);
 	}
 
 }

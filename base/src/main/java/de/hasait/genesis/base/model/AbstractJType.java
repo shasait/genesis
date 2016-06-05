@@ -18,7 +18,11 @@ package de.hasait.genesis.base.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import de.hasait.genesis.base.util.GenesisUtils;
 
@@ -27,6 +31,7 @@ import de.hasait.genesis.base.util.GenesisUtils;
  */
 public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends AbstractJDeclaredTypedElement {
 
+	private final Set<JTypeReference> _imports = new LinkedHashSet<JTypeReference>();
 	private final List<JField> _fields = new ArrayList<JField>();
 	private final List<AbstractJMethod> _methods = new ArrayList<AbstractJMethod>();
 	private final List<AbstractJType> _innerTypes = new ArrayList<AbstractJType>();
@@ -48,8 +53,28 @@ public abstract class AbstractJType<IMPL extends AbstractJType<IMPL>> extends Ab
 		return field;
 	}
 
+	public final void addImport(final @Nonnull JTypeReference pType) {
+		GenesisUtils.assertNotNull(pType);
+		// TODO assert not inner class
+
+		if (pType.isPrimitive() || pType.isVoid() || pType.isJavaLang()) {
+			return;
+		}
+		_imports.add(pType);
+	}
+
+	public boolean containsImport(final JTypeReference pType) {
+		return _imports.contains(pType);
+	}
+
+	@Nonnull
 	public List<JField> getFields() {
 		return Collections.unmodifiableList(_fields);
+	}
+
+	@Nonnull
+	public Set<JTypeReference> getImports() {
+		return Collections.unmodifiableSet(_imports);
 	}
 
 	protected void initField(final JField pField) {

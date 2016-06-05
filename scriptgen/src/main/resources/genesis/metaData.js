@@ -34,7 +34,6 @@ function generate(scriptEnv) {
 
     srcW.println();
     srcW.println("\tpublic static final String SOURCE__NAME = \"" + typeElement.getQualifiedName() + "\";");
-    srcW.println("\tpublic static final Class<?> SOURCE__TYPE = " + generatorEnv.typeMirrorToJTypeUsage(typeElement.asType()).erasure().toSrc() + ".class;");
 
     var processedPropertyNames = new java.util.HashSet();
 
@@ -46,10 +45,6 @@ function generate(scriptEnv) {
 
             srcW.println();
             srcW.println("\tpublic static final String PROPERTY__" + propertyNameUU + "__NAME = \"" + propertyName + "\";");
-
-            var propertyType = GenesisUtils.determinePropertyTypeFromAccessor(subElement);
-            var propertyTypeJavaSrc = generatorEnv.typeMirrorToJTypeUsage(propertyType).erasure().toSrc();
-            srcW.println("\tpublic static final Class<?> PROPERTY__" + propertyNameUU + "__TYPE = " + propertyTypeJavaSrc + ".class;");
         }
     }
 

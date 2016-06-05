@@ -14,17 +14,4 @@
  # limitations under the License.
 -->
 
-<#if model.type.type.package.qualifiedName??>package ${model.type.type.package.qualifiedName};</#if>
-
-<#list model.imports as import>
-import ${import.toSrc(srcContext, true)};
-</#list>
-
-<@delegate model=model template="AbstractJTypedElement-annotations.ftl" />
-<@delegate model=model template="AbstractJDeclaredTypedElement.ftl" replaceType=params.kind /> {
-
-    <#list model.fields as field>
-        <@delegate model=field />
-    </#list>
-
-}
+${model.toSrc(srcContext)}

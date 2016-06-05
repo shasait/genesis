@@ -30,10 +30,11 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import de.hasait.genesis.base.AbstractGenesisProcessor;
-import de.hasait.genesis.base.GeneratorEnv;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.AbstractGenesisProcessor;
+import de.hasait.genesis.base.GeneratorEnv;
 
 @SupportedOptions({
 		ScriptGenProcessor.OPTION___LOCATIONS

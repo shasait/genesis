@@ -36,11 +36,11 @@ public final class JTypeUsage implements JSrcSupported {
 
 	private final List<Integer> _arrayDimensions = new ArrayList<Integer>();
 
-	public JTypeUsage(@Nonnull final JTypeReference pType, final JTypeArgument... pArguments) {
+	public JTypeUsage(final @Nonnull JTypeReference pType, final JTypeArgument... pArguments) {
 		this(pType, Arrays.asList(pArguments), null);
 	}
 
-	public JTypeUsage(@Nonnull final JTypeReference pType, @Nullable final List<JTypeArgument> pArguments, @Nullable final List<Integer> pArrayDimensions) {
+	public JTypeUsage(final @Nonnull JTypeReference pType, final @Nullable List<JTypeArgument> pArguments, final @Nullable List<Integer> pArrayDimensions) {
 		super();
 		GenesisUtils.assertNotNull(pType);
 
@@ -58,13 +58,13 @@ public final class JTypeUsage implements JSrcSupported {
 		}
 	}
 
-	public void addArgument(@Nonnull final JTypeArgument pArgument) {
+	public void addArgument(final @Nonnull JTypeArgument pArgument) {
 		GenesisUtils.assertNotNull(pArgument);
 
 		_arguments.add(pArgument);
 	}
 
-	public void addArrayDimension(@Nullable final Integer pDimension) {
+	public void addArrayDimension(final @Nullable Integer pDimension) {
 		_arrayDimensions.add(pDimension);
 	}
 
@@ -76,9 +76,9 @@ public final class JTypeUsage implements JSrcSupported {
 		return _type;
 	}
 
-	public String toSrc() {
+	public String toSrc(final SrcContext pContext) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(_type.toSrc());
+		sb.append(_type.toSrc(pContext));
 		if (!_arguments.isEmpty()) {
 			sb.append('<');
 			boolean first = true;
@@ -88,7 +88,7 @@ public final class JTypeUsage implements JSrcSupported {
 				} else {
 					sb.append(", ");
 				}
-				sb.append(argument.toSrc());
+				sb.append(argument.toSrc(pContext));
 			}
 			sb.append('>');
 		}

@@ -16,10 +16,10 @@
 
 package de.hasait.genesis.scriptgen;
 
-import de.hasait.genesis.base.util.GenesisUtils;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *

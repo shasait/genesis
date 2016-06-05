@@ -16,19 +16,42 @@
 
 package de.hasait.genesis.base.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *
  */
 public final class JAnnotation {
 
-	private JTypeReference _type;
+	private final JTypeReference _type;
+	private final List<JAssignmentStatement> _argAssignments = new ArrayList<JAssignmentStatement>();
 
-	private List<JAssignmentStatement> _argAssignments;
-
-	JAnnotation() {
+	JAnnotation(final @Nonnull JTypeReference pType) {
 		super();
+		GenesisUtils.assertNotNull(pType);
+
+		_type = pType;
+	}
+
+	public final void addArgAssignment(final @Nonnull String pTargetName, final @Nonnull AbstractJExpression pSourceExpression) {
+		final JAssignmentStatement assignmentStatement = new JAssignmentStatement(pTargetName, pSourceExpression);
+		_argAssignments.add(assignmentStatement);
+	}
+
+	@Nonnull
+	public List<JAssignmentStatement> getArgAssignments() {
+		return Collections.unmodifiableList(_argAssignments);
+	}
+
+	@Nonnull
+	public JTypeReference getType() {
+		return _type;
 	}
 
 }

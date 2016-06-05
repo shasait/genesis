@@ -16,8 +16,11 @@
 
 package de.hasait.genesis.base.model;
 
-import de.hasait.genesis.base.util.GenesisUtils;
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *
@@ -26,9 +29,9 @@ public abstract class AbstractJNamed {
 
 	private final String _name;
 
-	AbstractJNamed(final String pName) {
+	AbstractJNamed(final @Nonnull String pName) {
 		super();
-		GenesisUtils.assertTrue(!StringUtils.isEmpty(pName));
+		GenesisUtils.assertTrue(StringUtils.isNotEmpty(pName));
 
 		_name = pName;
 	}

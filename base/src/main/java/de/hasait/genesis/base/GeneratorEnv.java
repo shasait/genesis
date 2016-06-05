@@ -50,14 +50,14 @@ public final class GeneratorEnv implements ModelWriterEnv {
 	private final Element _annotatedElement;
 	private final JModel _model;
 
-	GeneratorEnv(final ProcessingEnvironment pProcessingEnvironment, final RoundEnvironment pRoundEnvironment, final Element pAnnotatedElement) {
+	GeneratorEnv(final Class<? extends AbstractGenesisProcessor> pProcessorClass, final ProcessingEnvironment pProcessingEnvironment, final RoundEnvironment pRoundEnvironment, final Element pAnnotatedElement) {
 		super();
 
 		_processingEnvironment = pProcessingEnvironment;
 		_roundEnvironment = pRoundEnvironment;
 		_annotatedElement = pAnnotatedElement;
 
-		_model = new JModel();
+		_model = new JModel(pProcessorClass);
 	}
 
 	@Nonnull
@@ -154,7 +154,6 @@ public final class GeneratorEnv implements ModelWriterEnv {
 
 		final TypeKind kind = pTypeMirror.getKind();
 
-		final JTypeReference typeReference;
 		if (kind.isPrimitive()) {
 			switch (kind) {
 				case BOOLEAN:

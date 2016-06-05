@@ -16,34 +16,27 @@
 
 package de.hasait.genesis.base.model;
 
+import javax.annotation.Nonnull;
+
+import de.hasait.genesis.base.util.GenesisUtils;
+
 /**
  *
  */
-public final class JCustomExpression extends AbstractJExpression implements JSrcSupported {
+public class SrcContext {
 
-	private String _customCode;
+	private final AbstractJType<?> _type;
 
-	public JCustomExpression() {
+	public SrcContext(final @Nonnull AbstractJType<?> pType) {
 		super();
+		GenesisUtils.assertNotNull(pType);
+
+		_type = pType;
 	}
 
-	public JCustomExpression(final String pCustomCode) {
-		super();
-
-		setCustomCode(pCustomCode);
-	}
-
-	public final String getCustomCode() {
-		return _customCode;
-	}
-
-	public final void setCustomCode(final String pCustomCode) {
-		_customCode = pCustomCode;
-	}
-
-	@Override
-	public String toSrc() {
-		return _customCode;
+	@Nonnull
+	public AbstractJType<?> getType() {
+		return _type;
 	}
 
 }

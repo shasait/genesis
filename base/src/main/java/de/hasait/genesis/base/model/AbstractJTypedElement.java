@@ -17,10 +17,14 @@
 package de.hasait.genesis.base.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import de.hasait.genesis.base.util.GenesisUtils;
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *
@@ -31,14 +35,28 @@ public abstract class AbstractJTypedElement extends AbstractJNamed {
 	private final List<JAnnotation> _annotations = new ArrayList<JAnnotation>();
 	private boolean _final;
 
-	AbstractJTypedElement(final JTypeUsage pType, final String pName) {
+	AbstractJTypedElement(final @Nonnull JTypeUsage pType, final @Nonnull String pName) {
 		super(pName);
 		GenesisUtils.assertNotNull(pType);
-		GenesisUtils.assertTrue(!StringUtils.isEmpty(pName));
+		GenesisUtils.assertTrue(StringUtils.isNotEmpty(pName));
 
 		_type = pType;
 	}
 
+	public final JAnnotation addAnnotation(final @Nonnull JTypeReference pType) {
+		GenesisUtils.assertNotNull(pType);
+
+		final JAnnotation annotation = new JAnnotation(pType);
+		_annotations.add(annotation);
+		return annotation;
+	}
+
+	@Nonnull
+	public List<JAnnotation> getAnnotations() {
+		return Collections.unmodifiableList(_annotations);
+	}
+
+	@Nonnull
 	public final JTypeUsage getType() {
 		return _type;
 	}

@@ -18,6 +18,6 @@ package de.hasait.genesis.base.model;
 
 public interface JSrcSupported {
 
-	String toSrc();
+	String toSrc(SrcContext pContext);
 
 }

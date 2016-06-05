@@ -16,17 +16,37 @@
 
 package de.hasait.genesis.base.model;
 
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.util.GenesisUtils;
+
 /**
  *
  */
 public final class JAssignmentStatement extends AbstractJStatement {
 
-	private String _targetName;
+	private final String _targetName;
+	private final AbstractJExpression _sourceExpression;
 
-	private AbstractJExpression _sourceExpression;
-
-	JAssignmentStatement() {
+	JAssignmentStatement(final @Nonnull String pTargetName, final @Nonnull AbstractJExpression pSourceExpression) {
 		super();
+		GenesisUtils.assertTrue(StringUtils.isNotEmpty(pTargetName));
+		GenesisUtils.assertNotNull(pSourceExpression);
+
+		_targetName = pTargetName;
+		_sourceExpression = pSourceExpression;
+	}
+
+	@Nonnull
+	public AbstractJExpression getSourceExpression() {
+		return _sourceExpression;
+	}
+
+	@Nonnull
+	public String getTargetName() {
+		return _targetName;
 	}
 
 }

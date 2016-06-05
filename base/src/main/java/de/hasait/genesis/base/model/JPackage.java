@@ -19,8 +19,11 @@ package de.hasait.genesis.base.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hasait.genesis.base.util.GenesisUtils;
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.StringUtils;
+
+import de.hasait.genesis.base.util.GenesisUtils;
 
 /**
  *
@@ -37,7 +40,7 @@ public final class JPackage extends AbstractJNamed {
 
 	private final Map<String, JTypeReference> _typesByName = new HashMap<String, JTypeReference>();
 
-	JPackage(final JPackage pParent, final String pName) {
+	JPackage(final @Nonnull JPackage pParent, final String pName) {
 		super(pName);
 		GenesisUtils.assertNotNull(pParent);
 
@@ -79,10 +82,12 @@ public final class JPackage extends AbstractJNamed {
 		});
 	}
 
+	@Nonnull
 	public JPackage getParent() {
 		return _parent;
 	}
 
+	@Nonnull
 	public String getQualifiedName() {
 		return _qualifiedName;
 	}
