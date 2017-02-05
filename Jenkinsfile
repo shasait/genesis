@@ -1,4 +1,5 @@
 #!groovy
+
 /*
  * Copyright (C) 2017 by Sebastian Hasait (sebastian at hasait dot de)
  *
@@ -21,7 +22,8 @@ properties([
 				string(name: 'releaseVersion', defaultValue: '', description: 'Release version - if set a release will be build, otherwise normal CI'),
 				string(name: 'developmentVersion', defaultValue: '', description: 'Next development version _without_ SNAPSHOT - if set POMs will be updated after build'),
 				string(name: 'gitUserName', defaultValue: 'ciserver', description: 'Git user name'),
-				string(name: 'gitUserEmail', defaultValue: 'ciserver@hasait.de', description: 'Git user email')
+				string(name: 'gitUserEmail', defaultValue: 'ciserver@hasait.de', description: 'Git user email'),
+				booleanParam(name: 'mvnDebug', defaultValue: false, description: 'Add -X to Maven options')
 		]),
 		pipelineTriggers([pollSCM('H/10 * * * *')])
 ])
@@ -62,8 +64,11 @@ node('linux') {
 	configFileProvider([configFile(fileId: 'ciserver-settings.xml', targetLocation: 'maven-settings.xml', variable: 'mvnSettings'), configFile(fileId: 'ciserver-toolchains.xml', targetLocation: 'maven-toolchains.xml', variable: 'mvnToolchains')]) {
 		withEnv(["PATH+JDK=${jdkHome}/bin", "PATH+MVN=${mvnHome}/bin"]) {
 			dir('co') {
-				def mvnOptions = "-s ${mvnSettings} --global-toolchains ${mvnToolchains} -Dmaven.repo.local=${mvnRepo}"
-				def mvnCommand = "mvn -B -U -e ${mvnOptions}"
+				def mvnOptions = "-B -U -e -s ${mvnSettings} --global-toolchains ${mvnToolchains} -Dmaven.repo.local=${mvnRepo}"
+				if (params.mvnDebug) {
+					mvnOptions = "-X ${mvnOptions}"
+				}
+				def mvnCommand = "mvn ${mvnOptions}"
 				def currentBranch
 				def releaseTag
 
