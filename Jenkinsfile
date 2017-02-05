@@ -77,7 +77,11 @@ node('linux') {
 
 					sh "printenv"
 					sh "git config --list"
-					currentBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+					if (env.BRANCH_NAME) {
+						currentBranch = "HEAD:${env.BRANCH_NAME}"
+					} else {
+						currentBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+					}
 					echo "\u27A1 On branch ${currentBranch}..."
 
 					if (params.releaseVersion || params.developmentVersion) {
