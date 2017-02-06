@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>de.hasait.genesis</groupId>
 		<artifactId>genesis-procparent</artifactId>
-		<version>0.6.1.RC2</version>
+		<version>0.6.1.RC3-SNAPSHOT</version>
 		<relativePath>../procparent/pom.xml</relativePath>
 	</parent>
 
