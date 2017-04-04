@@ -19,7 +19,7 @@
 
 	<groupId>de.hasait.genesis</groupId>
 	<artifactId>genesis-parent</artifactId>
-	<version>0.6.1.FINAL</version>
+	<version>0.6.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Genesis Parent</name>
