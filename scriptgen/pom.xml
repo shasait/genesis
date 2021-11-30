@@ -58,8 +58,8 @@
 				<configuration>
 					<toolchains>
 						<jdk>
-							<vendor>oracle</vendor>
-							<version>8latest</version>
+							<vendor>any</vendor>
+							<version>8.latest</version>
 						</jdk>
 					</toolchains>
 				</configuration>

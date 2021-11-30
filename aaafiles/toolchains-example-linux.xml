@@ -19,41 +19,11 @@
 	<toolchain>
 		<type>jdk</type>
 		<provides>
-			<vendor>oracle</vendor>
-			<version>6latest</version>
+			<vendor>any</vendor>
+			<version>8.latest</version>
 		</provides>
 		<configuration>
-			<jdkHome>/opt/jdk1.6.0_45</jdkHome>
-		</configuration>
-	</toolchain>
-	<toolchain>
-		<type>jdk</type>
-		<provides>
-			<vendor>oracle</vendor>
-			<version>1.6.0_45</version>
-		</provides>
-		<configuration>
-			<jdkHome>/opt/jdk1.6.0_45</jdkHome>
-		</configuration>
-	</toolchain>
-	<toolchain>
-		<type>jdk</type>
-		<provides>
-			<vendor>oracle</vendor>
-			<version>8latest</version>
-		</provides>
-		<configuration>
-			<jdkHome>/opt/jdk1.8.0_60</jdkHome>
-		</configuration>
-	</toolchain>
-	<toolchain>
-		<type>jdk</type>
-		<provides>
-			<vendor>oracle</vendor>
-			<version>1.8.0_60</version>
-		</provides>
-		<configuration>
-			<jdkHome>/opt/jdk1.8.0_60</jdkHome>
+			<jdkHome>/opt/jdk8</jdkHome>
 		</configuration>
 	</toolchain>
 </toolchains>

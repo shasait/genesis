@@ -1,2 +1,12 @@
 /**/target/
 /**/dependency-reduced-pom.xml
+
+# IntelliJ
+.idea
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings
+
